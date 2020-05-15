@@ -3,7 +3,6 @@
     package="com.example.bloodwallet">
 
     <uses-permission android:name="android.permission.CAMERA" />
-
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -20,8 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BloodCertificationCameraActivity" />
-        <activity android:name=".BloodCertificationRegisterActivity" />
+        <activity android:name=".BloodCertificationCameraActivity"
+            android:theme="@android:style/Theme.Black.NoTitleBar"/>
+        <activity android:name=".BloodCertificationRegisterActivity"
+            android:parentActivityName=".MainActivity"/>
         <activity android:name=".MainActivity"/>
     </application>
 
