@@ -10,7 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/story_bottom_my_info">
+        android:layout_above="@id/story_list_bottom_my_info">
 
         <ListView
             android:id="@+id/story_list"
@@ -21,7 +21,7 @@
 
     <include
         layout="@layout/fragment_bottom_my_info"
-        android:id="@+id/story_bottom_my_info"
+        android:id="@+id/story_list_bottom_my_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"/>
