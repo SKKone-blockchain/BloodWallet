@@ -3,6 +3,7 @@
     package="com.example.bloodwallet">
 
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
 
     <application
@@ -12,6 +13,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity
+            android:name=".SearchConfigureActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="검색 환경설정"/>
         <activity android:name=".PermissionCheckActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,11 +24,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BloodCertificationCameraActivity"
-            android:theme="@android:style/Theme.Black.NoTitleBar"/>
-        <activity android:name=".BloodCertificationRegisterActivity"
-            android:parentActivityName=".MainActivity"/>
-        <activity android:name=".MainActivity"/>
+        <activity
+            android:name=".BloodCertificationCameraActivity"
+            android:theme="@android:style/Theme.Black.NoTitleBar" />
+        <activity
+            android:name=".BloodCertificationRegisterActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
