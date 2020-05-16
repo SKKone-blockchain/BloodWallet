@@ -14,9 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".StoryPostingActivity"
+            android:label="스토리 작성하기"
+            android:parentActivityName=".MainActivity"/>
+        <activity
             android:name=".StoryActivity"
             android:label="스토리 목록"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".SearchConfigureActivity"
             android:label="검색 환경설정"
