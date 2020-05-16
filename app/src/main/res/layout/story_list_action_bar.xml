@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    android:orientation="horizontal"
+    android:gravity="center_vertical">
+
+    <EditText
+        android:id="@+id/story_list_search_word"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:text="스토리 목록"
+        android:textColor="#FFFFFF"
+        android:gravity="center_vertical"/>
+
+    <View
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:id="@+id/story_list_search_icon"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/story_search_icon"
+        android:layout_marginRight="10dp"
+        android:clickable="true"/>
+
+    <ImageView
+        android:id="@+id/story_list_option"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/story_option_icon"
+        android:layout_marginLeft="10dp"
+        android:clickable="true"/>
+
+    <View
+        android:layout_width="10dp"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

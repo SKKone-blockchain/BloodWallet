@@ -2,6 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.bloodwallet">
 
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,13 +13,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name=".StoryActivity"/>
+        <activity
+            android:name=".StoryPostingActivity"
+            android:label="스토리 작성하기"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".StoryListActivity"
+            android:label="스토리 목록"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".SearchConfigureActivity"
+            android:label="검색 환경설정"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".PermissionCheckActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".BloodCertificationCameraActivity"
+            android:theme="@android:style/Theme.Black.NoTitleBar" />
+        <activity
+            android:name=".BloodCertificationRegisterActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity android:name=".MainActivity" />
     </application>
 
 </manifest>
