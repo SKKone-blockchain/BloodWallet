@@ -18,41 +18,64 @@
         android:text="Blood Wallet"
         android:gravity="center"
         android:textAppearance="@style/TextAppearance.AppCompat.Display3"/>
+
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.4"
+        android:layout_weight="0.3"
         app:srcCompat="@drawable/image4" />
 
-    <Button
-        android:id="@+id/loginbutton"
-        android:text="로그인"
+    <EditText
+        android:id="@+id/login_id"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.1"
         android:layout_marginHorizontal="100dp"
-        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#ffffff"
-        android:background="#F78C8C"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="10dp"/>
+        android:layout_weight="0.05"
+        android:ems="10"
+        android:hint="아이디"
+        android:inputType="textPersonName"
+        android:paddingLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/border"/>
+
+    <EditText
+        android:id="@+id/login_password"
+        android:ems="10"
+        android:hint="비밀번호"
+        android:inputType="textPassword"
+        android:layout_width="match_parent"
+        android:paddingLeft="10dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.05"
+        android:layout_marginHorizontal="100dp"
+        android:background="@drawable/border"/>
 
     <Button
-        android:id="@+id/registerbutton"
+        android:id="@+id/loginbutton_login"
+        android:text="로그인"
+        android:textColor="#ffffff"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginHorizontal="100dp"
         android:layout_weight="0.1"
-        android:background="#F78C8C"
-        android:text="회원가입"
+        android:layout_marginHorizontal="100dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-        android:textColor="#ffffff" />
+        android:background="#F78C8C"
+        android:layout_marginVertical="10dp"/>
+
+    <Button
+        android:id="@+id/registerbutton_login"
+        android:text="회원가입"
+        android:textColor="#ffffff"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        android:layout_weight="0.1"
+        android:layout_marginHorizontal="100dp"
+        android:background="#F78C8C"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.05"/>
-
-
 
 </LinearLayout>
