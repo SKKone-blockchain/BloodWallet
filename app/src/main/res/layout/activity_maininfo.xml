@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:foreground="@drawable/frame" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:text="      나의 기부 현황"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#F78C8C"
+        android:textStyle="bold"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar4"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.01"
+        android:layout_marginHorizontal="10dp"
+        android:background="#D6D6D6" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/donationlistbutton_maininfo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:layout_weight="0.5"
+            android:background="#FBE6E6"
+            android:foreground="@drawable/image2" />
+
+        <Button
+            android:id="@+id/donationsreceivedlistbutton_maininfo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:layout_weight="0.5"
+            android:background="#FBE6E6"
+            android:foreground="@drawable/image1" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:text="      서비스"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#F78C8C"
+        android:textStyle="bold"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar10"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_weight="0.01"
+        android:background="#D6D6D6" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="0.5"
+        android:layout_height="0dp"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/scanbutton_maininfo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:layout_weight="0.5"
+            android:background="#FBE6E6"
+            android:foreground="@drawable/image7" />
+
+        <Button
+            android:id="@+id/myinfobutton_maininfo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:layout_weight="0.5"
+            android:background="#FBE6E6"
+            android:foreground="@drawable/image3" />
+    </LinearLayout>
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:text="      헌혈증 기부"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textColor="#F78C8C"
+        android:textStyle="bold"/>
+
+    <ProgressBar
+        android:id="@+id/progressBar11"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_weight="0.01"
+        android:background="#D6D6D6" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_weight="0.5"
+        android:layout_height="0dp"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/searchingstorybutton_maininfo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:layout_weight="0.5"
+            android:background="#FBE6E6"
+            android:foreground="@drawable/image6" />
+
+        <Button
+            android:id="@+id/writingstorybutton_maininfo"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="15dp"
+            android:layout_weight="0.5"
+            android:background="#FBE6E6"
+            android:foreground="@drawable/image5" />
+    </LinearLayout>
+
+</LinearLayout>
+
