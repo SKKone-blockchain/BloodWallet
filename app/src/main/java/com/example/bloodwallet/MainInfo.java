@@ -33,7 +33,7 @@ public class MainInfo extends AppCompatActivity {
         Button scanbutton=findViewById(R.id.scanbutton_maininfo);
         scanbutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent i = new Intent(  MainInfo.this , Scan.class );
+                Intent i = new Intent(  MainInfo.this , BloodCertificationCameraActivity.class );
                 startActivity(i);
             }
         });
@@ -47,14 +47,14 @@ public class MainInfo extends AppCompatActivity {
         Button searchingstorybutton=findViewById(R.id.searchingstorybutton_maininfo);
         searchingstorybutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent i = new Intent(  MainInfo.this , Searchingstory.class );
+                Intent i = new Intent(  MainInfo.this , StoryListActivity.class );
                 startActivity(i);
             }
         });
         Button writingstorybutton=findViewById(R.id.writingstorybutton_maininfo);
         writingstorybutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent i = new Intent(  MainInfo.this , Writingstory.class );
+                Intent i = new Intent(  MainInfo.this , StoryPostingActivity.class );
                 startActivity(i);
             }
         });
