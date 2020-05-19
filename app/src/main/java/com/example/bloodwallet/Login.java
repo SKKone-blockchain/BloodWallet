@@ -7,7 +7,7 @@ import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-public class login extends AppCompatActivity {
+public class Login extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,14 +18,14 @@ public class login extends AppCompatActivity {
         Button d = findViewById(R.id.registerbutton_login);
         d.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Intent i = new Intent(  login.this , Register.class );
+                Intent i = new Intent(  Login.this , Register.class );
                 startActivity(i);
             }
         });
             Button LoginIntoMainInfo = findViewById(R.id.loginbutton_login);
             LoginIntoMainInfo.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    Intent i = new Intent(login.this, MainInfo.class);
+                    Intent i = new Intent(Login.this, MainInfo.class);
                     startActivity(i);
                 }
             });

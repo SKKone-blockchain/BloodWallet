@@ -7,25 +7,58 @@
     <uses-feature android:name="android.hardware.camera" />
 
     <application
+
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+
+
+            <activity android:name=".DonationListReading"/>
+
+            <activity android:name=".Myinfo"
+                android:label="내 정보"
+                android:parentActivityName=".MainInfo"/>
+            <activity android:name=".MyDonationList"
+                android:label="기부한 내역"
+                android:parentActivityName=".MainInfo"/>
+            <activity android:name=".MyDonationsReceivedList"
+                android:label="기부 받은 내역"
+                android:parentActivityName=".MainInfo"/>
+            <activity android:name=".Donation"
+                android:label="기부하기" />
+            <activity android:name=".MainInfo"
+                android:parentActivityName=".Login"/>
+            <activity android:name=".Login"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            <activity android:name=".Register"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            <activity android:name=".MainActivity"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
+                    <category android:name="android.intent.category.LAUNCHER" />
+                </intent-filter>
+            </activity>
+
+
         <activity android:name=".StoryActivity"/>
         <activity
             android:name=".StoryPostingActivity"
             android:label="스토리 작성하기"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainInfo" />
         <activity
             android:name=".StoryListActivity"
             android:label="스토리 목록"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainInfo" />
         <activity
             android:name=".SearchConfigureActivity"
             android:label="검색 환경설정"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainInfo" />
         <activity android:name=".PermissionCheckActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,7 +72,7 @@
         <activity
             android:name=".BloodCertificationRegisterActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".MainActivity" />
+
     </application>
 
 </manifest>

@@ -14,10 +14,11 @@ public class Donation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_donation);
+
         ImageButton backbutton=findViewById(R.id.back_stroy);
         backbutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent i = new Intent(  Donation.this , Searchingstory.class );
+                Intent i = new Intent(  Donation.this , StoryActivity.class );
                 startActivity(i);
             }
         });
