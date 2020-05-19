@@ -14,7 +14,7 @@ public class MainInfo extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maininfo);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Button donationlistbutton=findViewById(R.id.donationlistbutton_maininfo);
         donationlistbutton.setOnClickListener(new View.OnClickListener(){

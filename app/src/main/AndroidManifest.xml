@@ -17,18 +17,27 @@
 
 
 
-            <activity android:name=".DonationListReading"></activity>
+            <activity android:name=".DonationListReading"/>
 
-            <activity android:name=".Myinfo" />
-            <activity android:name=".MyDonationList" />
-            <activity android:name=".MyDonationsReceivedList" />
+            <activity android:name=".Myinfo"
+                android:label="내 정보"
+                android:parentActivityName=".MainInfo"/>
+            <activity android:name=".MyDonationList"
+                android:label="기부한 내역"
+                android:parentActivityName=".MainInfo"/>
+            <activity android:name=".MyDonationsReceivedList"
+                android:label="기부 받은 내역"
+                android:parentActivityName=".MainInfo"/>
             <activity android:name=".Donation"
-                android:label="기부하기"
-                android:parentActivityName=".MainActivity" />/>
-            <activity android:name=".MainInfo" />
-            <activity android:name=".Login" />
-            <activity android:name=".Register" />
-            <activity android:name=".MainActivity">
+                android:label="기부하기" />
+            <activity android:name=".MainInfo"
+                android:parentActivityName=".Login"/>
+            <activity android:name=".Login"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            <activity android:name=".Register"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+            <activity android:name=".MainActivity"
+                android:theme="@style/Theme.AppCompat.Light.NoActionBar">
 
                 <intent-filter>
                     <action android:name="android.intent.action.MAIN" />
@@ -41,15 +50,15 @@
         <activity
             android:name=".StoryPostingActivity"
             android:label="스토리 작성하기"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainInfo" />
         <activity
             android:name=".StoryListActivity"
             android:label="스토리 목록"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainInfo" />
         <activity
             android:name=".SearchConfigureActivity"
             android:label="검색 환경설정"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainInfo" />
         <activity android:name=".PermissionCheckActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

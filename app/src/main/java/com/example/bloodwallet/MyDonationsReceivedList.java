@@ -21,18 +21,13 @@ public class MyDonationsReceivedList extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_donations_received_list);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         listView =(ListView) findViewById(R.id.donationreceivedlist);
         adapter = new myadapter();
         listView.setAdapter(adapter);
 
-        ImageButton backbutton=findViewById(R.id.back_receivedreading);
-        backbutton.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                Intent i = new Intent(  MyDonationsReceivedList.this , MainInfo.class );
-                startActivity(i);
-            }
-        });
+
         ImageButton myinfobutton=findViewById(R.id.myinfobutton_list);
         myinfobutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
