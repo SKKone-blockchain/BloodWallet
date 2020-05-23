@@ -54,7 +54,7 @@
             android:background="#FBE6E6"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
-            android:text="혈액형"
+            android:text="성별"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textStyle="bold" />
         <TextView
@@ -63,7 +63,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:text="Rh+ A형"
+            android:text="남자"
             android:gravity="center_vertical|right"
             android:textStyle="bold"
             android:paddingRight="20dp"/>
@@ -78,11 +78,11 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginLeft="20dp"
-            android:layout_weight="7"
+            android:layout_weight="3"
             android:background="#FBE6E6"
             android:gravity="center_vertical"
             android:paddingLeft="20dp"
-            android:text="관심질환"
+            android:text="키워드"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textStyle="bold" />
 
@@ -92,7 +92,20 @@
             android:layout_height="match_parent"
             android:layout_marginRight="20dp"
             android:layout_weight="3"
-            android:background="@drawable/image77"
+            android:gravity="center_vertical|right" />
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
+            android:layout_weight="3"
+            android:gravity="center_vertical|right" />
+        <Spinner
+            android:id="@+id/spinner1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
+            android:layout_weight="3"
             android:gravity="center_vertical|right" />
     </LinearLayout>
     <LinearLayout
@@ -176,13 +189,15 @@
             android:background="#FBE6E6"
             android:layout_marginRight="20dp"/>
     </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.4"
         android:layout_marginHorizontal="20dp"
-        android:background="#FBE6E6"/>
-        <TextView
+        android:layout_weight="0.4"
+        android:background="#FBE6E6" />
+
+    <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.02"/>

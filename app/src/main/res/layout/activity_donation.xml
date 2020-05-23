@@ -1,28 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="75dp"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/back_stroy"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:foreground="@drawable/back" />
-
-        <TextView
-            android:id="@+id/imageView2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:background="@drawable/frame8" />
-    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
@@ -67,11 +49,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="20dp"
-        android:layout_weight="0.18"
+        android:layout_weight="0.12"
         android:background="#FBE6E6"
         android:gravity="center_vertical"
         android:paddingLeft="20dp"
-        android:text="환자 ID: SWE2020\n\n환자 정보: 만 24세, 남자\n\n병원명: 서울대학교병원\n\n작성자: 홍철수"
+        android:text="환자 ID: SWE2020\n\n환자 정보: 만 24세, 남자"
         android:textAppearance="@style/TextAppearance.AppCompat.Body2"
         android:textStyle="bold" />
 
@@ -278,12 +260,16 @@
             android:layout_weight="1"
             android:background="#FBE6E6"
             android:layout_marginLeft="20dp"/>
+
         <Button
-            android:id="@+id/button"
+            android:id="@+id/doantion_donation"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="8"
-            android:background="@drawable/image11"/>
+            android:background="@drawable/image11"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#FFFFFF"
+            android:text="기부하기" />
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"

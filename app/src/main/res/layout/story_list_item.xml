@@ -2,8 +2,9 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:orientation="horizontal">
+    android:layout_height="100dp"
+    android:orientation="horizontal"
+    android:background="@drawable/listframe">
 
     <View
         android:layout_width="15dp"
