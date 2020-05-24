@@ -23,17 +23,37 @@
             android:orientation="vertical"
             android:layout_marginRight="10dp">
 
+
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="10dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:orientation="horizontal">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="40dp"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
                 android:text="제목(병명)"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
                 android:gravity="center_vertical"/>
+
+                <Button
+                    android:id="@+id/story_donate"
+                    android:layout_width="0dp"
+                    android:layout_weight="2"
+                    android:layout_height="match_parent"
+                    android:background="@color/colorPrimary"
+                    android:gravity="center"
+                    android:text="헌혈증 기부하기"
+                    android:textColor="#ffffff"
+                    android:layout_marginVertical="10dp"/>
+
+            </LinearLayout>
 
             <View
                 android:layout_width="match_parent"
@@ -79,50 +99,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="만24세, 남자"
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="병원명 : "
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/story_hospital"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="서울대학교병원"
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:gravity="center_vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="작성자 : "
-                    android:textSize="15sp"
-                    android:textStyle="bold"/>
-
-                <TextView
-                    android:id="@+id/story_writer_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="홍철수"
                     android:textSize="15sp"
                     android:textStyle="bold"/>
 
@@ -187,23 +163,50 @@
                     android:gravity="center"/>
 
             </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/colorHorizontalLine"
+                android:layout_marginTop="5dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:text="응원메세지"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp"
+                android:gravity="center_vertical"
+                />
+
+
+            <ListView
+                android:id="@+id/messages"
+                android:layout_width="match_parent"
+                android:layout_height="319dp"
+                android:layout_marginRight="20dp"/>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="50dp" />
+
+            <Button
+                android:id="@+id/story_donate2"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginHorizontal="40dp"
+                android:layout_marginVertical="10dp"
+                android:background="@color/colorPrimary"
+                android:gravity="center"
+                android:text="헌혈증 기부하기"
+                android:textColor="#ffffff" />
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="50dp"/>
+                android:layout_height="70dp"/>
 
         </LinearLayout>
 
     </ScrollView>
-
-    <Button
-        android:id="@+id/story_donate"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="헌혈증 기부하기"
-        android:gravity="center"
-        android:background="@color/colorPrimary"
-        android:layout_above="@id/story_bottom_my_info"/>
 
     <include
         layout="@layout/fragment_bottom_my_info"
