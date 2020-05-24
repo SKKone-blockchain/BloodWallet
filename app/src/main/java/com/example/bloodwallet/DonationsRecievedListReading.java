@@ -10,6 +10,7 @@ public class DonationsRecievedListReading extends LinearLayout {
     TextView RecievedtitleView;
     TextView RecievedtimeView;
     TextView RecievedstoryView;
+    TextView RecievedpercentView;
 
     public DonationsRecievedListReading(Context context) {
         super(context);
@@ -17,6 +18,7 @@ public class DonationsRecievedListReading extends LinearLayout {
         RecievedtitleView= (TextView)findViewById(R.id.title_recievedreading);
         RecievedtimeView=(TextView)findViewById(R.id.time_recievedreading);
         RecievedstoryView= (TextView)findViewById(R.id.stoty_recievedreading);
+        RecievedpercentView= (TextView)findViewById(R.id.percent_recievedreading);
     }
     private void inflation_init(Context context){
         LayoutInflater inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -30,7 +32,8 @@ public class DonationsRecievedListReading extends LinearLayout {
     public void setTime(String time){
         RecievedtimeView.setText(time);
     }
-    public void setStory(String story){
-        RecievedstoryView.setText(story);
+    public void setStory(String story){  RecievedstoryView.setText(story);}
+    public void percent(String percent){
+        RecievedpercentView.setText(percent);
     }
 }

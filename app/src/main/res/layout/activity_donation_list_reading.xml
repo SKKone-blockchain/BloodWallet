@@ -3,19 +3,24 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="100dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:background="@drawable/listframe">
     <LinearLayout
 
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9"
         android:orientation="horizontal">
-    <View
-        android:id="@+id/profile_listreading"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="1.8"
-        android:foreground="@drawable/profile" />
+
+        <TextView
+            android:id="@+id/percent_listreading"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1.8"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            android:textColor="#F78C8C" />
 
     <LinearLayout
 
@@ -27,7 +32,9 @@
         <TextView
             android:id="@+id/title_listreading"
             android:layout_width="match_parent"
+            android:paddingTop="15dp"
             android:layout_height="0dp"
+            android:textStyle="bold"
             android:layout_weight="4"
             android:textColor="#5E5E5E" />
 
@@ -38,14 +45,27 @@
             android:layout_weight="6"
             android:textColor="#5E5E5E" />
     </LinearLayout>
-
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
         <TextView
             android:id="@+id/time_listreading"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
+            android:paddingTop="10dp"
             android:textColor="#5E5E5E" />
 
+            <TextView
+                android:id="@+id/check_listreading"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="#F78C8C" />
+        </LinearLayout>
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="0.25"
@@ -55,33 +75,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="10"/>
-            <TextView
-                android:id="@+id/pinkback"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="95"
-                android:background="#FBE6E6"/>
         </LinearLayout>
 
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5" />
-        <TextView
-            android:id="@+id/pinkback2"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="95"
-            android:background="#FBE6E6"/>
-
-
-    </LinearLayout>
-
 
 </LinearLayout>
+
