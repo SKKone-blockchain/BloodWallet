@@ -21,7 +21,7 @@
       ],
       "api_key": [
         {
-          "current_key": `${{ secrets.API_KEY }}`
+          "current_key": "'"${{ secrets.API_KEY }}"'"
         }
       ],
       "services": {
