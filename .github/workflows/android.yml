@@ -17,6 +17,7 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+      env: 
         current_key: ${{ secrets.API_KEY }}
     - name: Build with Gradle
       run: ./gradlew build
