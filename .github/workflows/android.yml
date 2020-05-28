@@ -17,6 +17,12 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+        
+    - name: Decode google-services.json
+      env: 
+        FIREBASE_CONFIG: ${{ secrets.API_KEY }}
+      run: echo $FIREBASE_CONFIG > app/google=services.json
+      
     - name: Build with Gradle
       env: 
         current_key: ${{ secrets.API_KEY }}
