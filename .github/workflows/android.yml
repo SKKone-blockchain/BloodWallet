@@ -21,7 +21,8 @@ jobs:
     - name: Decode google-services.json
       env: 
         FIREBASE_CONFIG: ${{ secrets.API_KEY }}
-      run: echo $FIREBASE_CONFIG > app/google-services.json
+      run: echo $FIREBASE_CONFIG | base64 -d > app/google-services.json
+      
       
     - name: Build with Gradle
       run: ./gradlew build
