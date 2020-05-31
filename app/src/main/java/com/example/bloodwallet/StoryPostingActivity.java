@@ -30,22 +30,22 @@ public class StoryPostingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (titleString.length() <= 0) {
-                    Toast.makeText(StoryPostingActivity.this, "제목을 입력해주세요", Toast.LENGTH_SHORT);
+                    Toast.makeText(StoryPostingActivity.this, "제목을 입력해주세요", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (contentString.length() <= 0) {
-                    Toast.makeText(StoryPostingActivity.this, "본문을 입력해주세요", Toast.LENGTH_SHORT);
+                    Toast.makeText(StoryPostingActivity.this, "본문을 입력해주세요", Toast.LENGTH_SHORT).show();
                     return;
                 } else if (goalString.length() <= 0) {
-                    Toast.makeText(StoryPostingActivity.this, "목표 갯수를 입력해주세요", Toast.LENGTH_SHORT);
+                    Toast.makeText(StoryPostingActivity.this, "목표 갯수를 입력해주세요", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 int goal = Integer.parseInt(goalString);
                 if (goal <= 0) {
-                    Toast.makeText(StoryPostingActivity.this, "목표 갯수를 양수로 설정해주세요", Toast.LENGTH_SHORT);
+                    Toast.makeText(StoryPostingActivity.this, "목표 갯수를 양수로 설정해주세요", Toast.LENGTH_SHORT).show();
                     return;
                 }
-                
+
                 // TODO : firebase 연동해서 글 작성
             }
         });
