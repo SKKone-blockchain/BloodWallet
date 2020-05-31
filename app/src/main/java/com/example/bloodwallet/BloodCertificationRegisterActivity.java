@@ -17,8 +17,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -45,7 +51,7 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         spinner = (Spinner) findViewById(R.id.blood_certificate_donation_type);
-        String[] bloodTypeArray = { "전혈 320ml", "전혈 400ml", "혈장 500ml", "혈소판 250ml", "혈소판혈장 250ml + 300ml" };
+        final String[] bloodTypeArray = { "전혈 320ml", "전혈 400ml", "혈장 500ml", "혈소판 250ml", "혈소판혈장 250ml + 300ml" };
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.blood_type_spinner_item, bloodTypeArray);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
@@ -121,6 +127,54 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
             }
         });
 
+        Button submitButton = findViewById(R.id.blood_certificate_submit);
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String name = nameEditTextView.getText().toString();
+                int birthDate = getDate(birthDateTextView.getText().toString());
+                int donationDate = getDate(donationDateTextView.getText().toString());
+                String source = donationSourceEditTextView.getText().toString();
+                int code = Integer.parseInt(donationCodeEditTextView.getText().toString());
+                String donationType = bloodTypeArray[spinner.getSelectedItemPosition()];
+
+                if (name.length() <= 0) {
+                    Toast.makeText(BloodCertificationRegisterActivity.this, "이름을 입력해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (String.valueOf(birthDate).length() != 8) {
+                    Toast.makeText(BloodCertificationRegisterActivity.this, "생년월일을 입력해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (String.valueOf(donationDate).length() != 8) {
+                    Toast.makeText(BloodCertificationRegisterActivity.this, "헌혈일자를 입력해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (source.length() <= 0) {
+                    Toast.makeText(BloodCertificationRegisterActivity.this, "혈액원명을 입력해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (String.valueOf(code).length() <= 0) {
+                    Toast.makeText(BloodCertificationRegisterActivity.this, "증서번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                HashMap<String, Object> values = new HashMap<>();
+                values.put("agency", source);
+                values.put("birthdate", birthDate);
+                values.put("code", code);
+                values.put("donation_date", donationDate);
+                values.put("donation_type", donationType);
+                values.put("name", name);
+                values.put("sex", isMale? "male" : "female");
+
+                DatabaseReference database = FirebaseDatabase.getInstance().getReference("certificates");
+
+                HashMap<String, Object> child = new HashMap<>();
+                String key = database.push().getKey();
+                child.put(key, values);
+
+                database.updateChildren(child);
+                finish();
+            }
+        });
+
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
             byte[] byteArray = getIntent().getByteArrayExtra("certificate");
@@ -137,7 +191,6 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
                 Matcher m = onlyNumberPattern.matcher(data);
                 if (matched.length() > 0 && m.find()) {
                     parsedOcr.add(matched);
-                    Log.d("test", matched);
                 }
             }
 
@@ -225,6 +278,10 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
 
     private String getDateString(int year, int month, int day) {
         return String.format("%04d.%02d.%02d", year, month, day);
+    }
+
+    private int getDate(String dateString) {
+        return Integer.parseInt(dateString.replace(".", ""));
     }
 
     @Override
