@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,6 +30,14 @@ public class StoryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_story);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ImageButton myInfoButton = findViewById(R.id.myinfobutton_list);
+        myInfoButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(StoryActivity.this , Myinfo.class );
+                startActivity(i);
+            }
+        });
 
         listView = (ListView)findViewById(R.id.messages);
         adapter = new myadapter();
