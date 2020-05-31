@@ -1,5 +1,6 @@
 package com.example.bloodwallet;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
@@ -19,13 +20,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +50,8 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
     Button male;
     Button female;
     boolean isMale;
+
+    Set<Map.Entry<String, HashMap>> certificates;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,8 +144,9 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
                 int birthDate = getDate(birthDateTextView.getText().toString());
                 int donationDate = getDate(donationDateTextView.getText().toString());
                 String source = donationSourceEditTextView.getText().toString();
-                int code = Integer.parseInt(donationCodeEditTextView.getText().toString());
+                String code = donationCodeEditTextView.getText().toString();
                 String donationType = bloodTypeArray[spinner.getSelectedItemPosition()];
+                String sex = isMale? "male" : "female";
 
                 if (name.length() <= 0) {
                     Toast.makeText(BloodCertificationRegisterActivity.this, "이름을 입력해주세요", Toast.LENGTH_SHORT).show();
@@ -155,23 +165,59 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
                     return;
                 }
 
-                HashMap<String, Object> values = new HashMap<>();
-                values.put("agency", source);
-                values.put("birthdate", birthDate);
-                values.put("code", code);
-                values.put("donation_date", donationDate);
-                values.put("donation_type", donationType);
-                values.put("name", name);
-                values.put("sex", isMale? "male" : "female");
+                String certificationKey = "";
+                HashMap validCertificate = null;
+                for (Map.Entry<String, HashMap> entry : certificates) {
+                    HashMap certificate = entry.getValue();
+                    if (certificate.get("agency").equals(source)
+                            && (Long)certificate.get("birthdate") == birthDate
+                            && (Long)certificate.get("code") == Long.parseLong(code)
+                            && (Long)certificate.get("donation_date") == donationDate
+                            && certificate.get("donation_type").equals(donationType)
+                            && certificate.get("name").equals(name)
+                            && certificate.get("sex").equals(sex)) {
+                        certificationKey = entry.getKey();
+                        validCertificate = certificate;
+                        break;
+                    }
+                }
 
-                DatabaseReference database = FirebaseDatabase.getInstance().getReference("certificates");
+                if (certificationKey.length() <= 0 || validCertificate == null) {
+                    Toast.makeText(BloodCertificationRegisterActivity.this, "유효하지 않은 헌혈증입니다", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                DatabaseReference database = FirebaseDatabase.getInstance().getReference("certificates/" + certificationKey);
 
                 HashMap<String, Object> child = new HashMap<>();
-                String key = database.push().getKey();
-                child.put(key, values);
-
+                HashMap<String, Object> owner = new HashMap<>();
+                owner.put("hospital_code", "");
+                // TODO : 현재 유저의 아이디를 불러와야 함
+                owner.put("owner_id", "temp_user_id");
+                owner.put("user_id", "temp_user_id");
+                child.put("owner", owner);
                 database.updateChildren(child);
+
                 finish();
+            }
+        });
+
+        certificates = new HashSet<>();
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("certificates");
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (certificates.size() > 0) {
+                    return;
+                }
+
+                HashMap<String, HashMap> posts = (HashMap)dataSnapshot.getValue();
+                certificates = posts.entrySet();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 
