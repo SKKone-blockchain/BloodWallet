@@ -31,13 +31,13 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="100dp"
+        android:layout_marginBottom="10dp"
         android:layout_weight="0.05"
+        android:background="@drawable/border"
         android:ems="10"
         android:hint="아이디"
         android:inputType="textPersonName"
-        android:paddingLeft="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/border"/>
+        android:paddingLeft="10dp" />
 
     <EditText
         android:id="@+id/login_password"
