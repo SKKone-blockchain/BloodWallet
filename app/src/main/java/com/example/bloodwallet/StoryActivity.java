@@ -22,19 +22,21 @@ public class StoryActivity extends AppCompatActivity {
     ListView listView;
     String[] messagestr={"힘내세요!","힘내요!","정말 안타까운 이야기네요 ㅜㅜ","비록 적은 수의 헌혈증이지만 도움이 됐으면 좋겠습니다."};
     myadapter adapter;
-
+    String userID;
     private StoryListViewAdapter listViewAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
-
+        Intent intent2 = getIntent();
+        userID=intent2.getStringExtra("userID");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ImageButton myInfoButton = findViewById(R.id.myinfobutton_list);
         myInfoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(StoryActivity.this , Myinfo.class );
+                i.putExtra("userID",userID);
                 startActivity(i);
             }
         });
@@ -66,6 +68,7 @@ public class StoryActivity extends AppCompatActivity {
         donateButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(  StoryActivity.this , Donation.class );
+                i.putExtra("userID",userID);
                 startActivity(i);
             }
         });

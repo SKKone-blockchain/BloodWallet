@@ -20,7 +20,8 @@
         <activity
             android:name=".ui.login.popup"
             android:label="@string/title_activity_popup" />
-        <activity android:name=".Register_info" />
+        <activity android:name=".Register_info"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity android:name=".DonationListReading" />
         <activity
             android:name=".Myinfo"

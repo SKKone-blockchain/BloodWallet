@@ -22,13 +22,23 @@ public class Donation extends AppCompatActivity {
 
     int i=1;
     private Spinner spinner;
-
+    String userID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_donation);
-
+        Intent intent2 = getIntent();
+        userID=intent2.getStringExtra("userID");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ImageButton myInfoButton = findViewById(R.id.myinfobutton_donation);
+        myInfoButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(Donation.this , Myinfo.class );
+                i.putExtra("userID",userID);
+                startActivity(i);
+            }
+        });
 
         Button d = findViewById(R.id.doantion_donation);
         d.setOnClickListener(new View.OnClickListener() {

@@ -306,6 +306,40 @@
         android:layout_height="0dp"
         android:layout_weight="0.02"/>
 
-    <include layout="@layout/fragment_bottom_my_info"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary">
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="match_parent"
+            android:text="Blood Wallet"
+            android:textColor="#FFFFFF"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="내 정보"
+            android:textColor="#FFFFFF"
+            android:gravity="bottom|right"
+            android:paddingBottom="5dp"
+            android:paddingRight="0dp"/>
+
+
+        <ImageButton
+            android:id="@+id/myinfobutton_donation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
+            android:background="#F78C8C"
+            android:src="@drawable/my_info_icon" />
+    </LinearLayout>
 </LinearLayout>

@@ -19,14 +19,15 @@ public class MyDonationList extends AppCompatActivity {
     String[] story={"aaaa","bbbb","cccc","dddd"};
     String[] percent={"0%","30%", "95%", "100%"};
     String[] check={"사용\n대기중","사용\n대기중","사용\n대기중","사용\n완료"};
-
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_donation_list);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
+        Intent intent = getIntent();
+        userID=intent.getStringExtra("userID");
         listView =(ListView) findViewById(R.id.donatedlist);
         adapter = new myadapter();
         listView.setAdapter(adapter);
@@ -36,6 +37,7 @@ public class MyDonationList extends AppCompatActivity {
         myinfobutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i = new Intent(  MyDonationList.this , Myinfo.class );
+                i.putExtra("userID",userID);
                 startActivity(i);
             }
         });

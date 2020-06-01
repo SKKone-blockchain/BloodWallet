@@ -26,16 +26,18 @@ import java.util.Map;
 public class StoryListActivity extends AppCompatActivity {
 
     private StoryListViewAdapter listViewAdapter;
-
+    String userID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_list);
-
+        Intent intent = getIntent();
+        userID=intent.getStringExtra("userID");
         ImageButton f = findViewById(R.id.myinfobutton_list);
         f.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(  StoryListActivity.this , Myinfo.class );
+                i.putExtra("userID",userID);
                 startActivity(i);
             }
         });
@@ -47,6 +49,7 @@ public class StoryListActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent i = new Intent(StoryListActivity.this , StoryActivity.class);
+                i.putExtra("userID",userID);
                 StoryListItem item = (StoryListItem)listView.getItemAtPosition(position);
                 i.putExtra("title", item.title);
                 i.putExtra("content", item.content);

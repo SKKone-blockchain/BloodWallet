@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="#FBE6E6">
     <TextView
@@ -73,9 +74,11 @@
         android:layout_weight="0.1"
         android:layout_marginHorizontal="100dp"
         android:background="#F78C8C"/>
+
     <TextView
+        android:id="@+id/textviewMessage"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.05"/>
+        android:layout_weight="0.05" />
 
 </LinearLayout>

@@ -2,24 +2,33 @@ package com.example.bloodwallet;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 
 public class MainInfo extends AppCompatActivity {
-
+    private FirebaseAuth firebaseAuth;
+    String userID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maininfo);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        Intent intent = getIntent();
+        userID=intent.getStringExtra("userID");
+        System.out.println(userID);
+
         Button donationlistbutton=findViewById(R.id.donationlistbutton_maininfo);
         donationlistbutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i = new Intent(  MainInfo.this , MyDonationList.class );
+                i.putExtra("userID",userID);
                 startActivity(i);
             }
         });
@@ -27,6 +36,7 @@ public class MainInfo extends AppCompatActivity {
         donationsreceivedlistbutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i = new Intent(  MainInfo.this , MyDonationsReceivedList.class );
+                i.putExtra("userID",userID);
                 startActivity(i);
             }
         });
@@ -34,6 +44,7 @@ public class MainInfo extends AppCompatActivity {
         scanbutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i = new Intent(  MainInfo.this , BloodCertificationCameraActivity.class );
+                i.putExtra("userID",userID);
                 startActivity(i);
             }
         });
@@ -41,6 +52,7 @@ public class MainInfo extends AppCompatActivity {
         myinfobutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i = new Intent(  MainInfo.this , Myinfo.class );
+                i.putExtra("userID",userID);
                 startActivity(i);
             }
         });
@@ -48,6 +60,7 @@ public class MainInfo extends AppCompatActivity {
         searchingstorybutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i = new Intent(  MainInfo.this , StoryListActivity.class );
+                i.putExtra("userID",userID);
                 startActivity(i);
             }
         });
@@ -55,8 +68,19 @@ public class MainInfo extends AppCompatActivity {
         writingstorybutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent i = new Intent(  MainInfo.this , StoryPostingActivity.class );
+                i.putExtra("userID",userID);
                 startActivity(i);
             }
         });
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{ //toolbar의 back키 눌렀을 때 동작
+                FirebaseAuth.getInstance().signOut();
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
