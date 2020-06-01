@@ -3,9 +3,11 @@ package com.example.bloodwallet;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 public class SearchConfigureActivity extends AppCompatActivity {
@@ -15,6 +17,14 @@ public class SearchConfigureActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_configure);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        ImageButton myInfoButton = findViewById(R.id.myinfobutton_list);
+        myInfoButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(SearchConfigureActivity.this , Myinfo.class );
+                startActivity(i);
+            }
+        });
 
         final TextView searchStartDateText = (TextView) findViewById(R.id.search_configure_start_date);
         searchStartDateText.setOnClickListener(new View.OnClickListener() {

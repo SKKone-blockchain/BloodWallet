@@ -11,7 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
-        android:layout_above="@id/story_donate"
         android:scrollbarThumbVertical="@color/colorPrimary"
         android:scrollbars="vertical"
         android:layout_marginLeft="10dp"
@@ -23,24 +22,24 @@
             android:orientation="vertical"
             android:layout_marginRight="10dp">
 
-
-
             <View
                 android:layout_width="match_parent"
                 android:layout_height="10dp"/>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="5"
-                android:text="제목(병명)"
-                android:textColor="@color/colorPrimary"
-                android:textSize="20sp"
-                android:gravity="center_vertical"/>
+                <TextView
+                    android:id="@+id/story_title"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:text="제목(병명)"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="20sp"
+                    android:gravity="center_vertical"/>
 
                 <Button
                     android:id="@+id/story_donate"
@@ -143,7 +142,7 @@
                 android:orientation="horizontal">
 
                 <ProgressBar
-                    android:id="@+id/story_progress"
+                    android:id="@+id/story_progress_bar"
                     android:layout_width="0dp"
                     android:layout_weight="2"
                     android:layout_height="12dp"
@@ -154,6 +153,7 @@
                     android:progressDrawable="@drawable/round_corner_progressbar"/>
 
                 <TextView
+                    android:id="@+id/story_progress_number"
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="wrap_content"
@@ -183,26 +183,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="319dp"
                 android:layout_marginRight="20dp"/>
-
-            <View
-                android:id="@+id/view"
-                android:layout_width="match_parent"
-                android:layout_height="50dp" />
-
-            <Button
-                android:id="@+id/story_donate2"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginHorizontal="40dp"
-                android:layout_marginVertical="10dp"
-                android:background="@color/colorPrimary"
-                android:gravity="center"
-                android:text="헌혈증 기부하기"
-                android:textColor="#ffffff" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="70dp"/>
 
         </LinearLayout>
 

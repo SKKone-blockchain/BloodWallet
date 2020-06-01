@@ -1,15 +1,14 @@
 package com.example.bloodwallet;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class StoryListViewAdapter extends BaseAdapter {
 
@@ -40,33 +39,31 @@ public class StoryListViewAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.story_list_item, parent, false);
         }
 
-        ImageView profilePhoto = (ImageView) convertView.findViewById(R.id.story_list_profile_photo);
         TextView storyTitle = (TextView) convertView.findViewById(R.id.story_list_title);
-        TextView storyContent = (TextView) convertView.findViewById(R.id.story_list_content);
+        TextView storySummary = (TextView) convertView.findViewById(R.id.story_list_summary);
         TextView uploadTime = (TextView) convertView.findViewById(R.id.story_list_time);
         TextView percent = (TextView) convertView.findViewById(R.id.story_list_percent);
 
         StoryListItem listViewItem = listViewItemList.get(position);
 
         // 아이템 내 각 위젯에 데이터 반영
-        if (listViewItem.getProfilePhoto() != null) {
-            profilePhoto.setImageDrawable(listViewItem.getProfilePhoto());
-        }
-        storyTitle.setText(listViewItem.getStoryTitle());
-        storyContent.setText(listViewItem.getStoryContent());
+        storyTitle.setText(listViewItem.getTitle());
+        storySummary.setText(listViewItem.getSummary());
         uploadTime.setText(listViewItem.getUploadTime());
         percent.setText(listViewItem.getPercent());
 
         return convertView;
     }
 
-    public void addItem(Drawable photo, String title, String content, String uploadTime, int percent) {
+    public void addItem(HashMap post) {
         StoryListItem item = new StoryListItem();
-        item.setProfilePhoto(photo);
-        item.setStoryTitle(title);
-        item.setStoryContent(content);
-        item.setUploadTime(uploadTime);
-        item.setPercent(percent);
+
+        item.title = post.get("title").toString();
+        item.content = post.get("content").toString();
+        item.summary = post.get("abstract").toString();
+        item.uploadTime = "10:22PM";
+        item.donatedNum = Integer.parseInt(post.get("donated_num").toString());
+        item.goalNum = Integer.parseInt(post.get("goal_num").toString());
 
         listViewItemList.add(item);
     }

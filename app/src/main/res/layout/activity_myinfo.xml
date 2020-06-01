@@ -87,21 +87,21 @@
             android:textStyle="bold" />
 
         <Spinner
-            android:id="@+id/spinner1"
+            android:id="@+id/myinfo_keyword1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginRight="20dp"
             android:layout_weight="3"
             android:gravity="center_vertical|right" />
         <Spinner
-            android:id="@+id/spinner1"
+            android:id="@+id/myinfo_keyword2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginRight="20dp"
             android:layout_weight="3"
             android:gravity="center_vertical|right" />
         <Spinner
-            android:id="@+id/spinner1"
+            android:id="@+id/myinfo_keyword3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginRight="20dp"
