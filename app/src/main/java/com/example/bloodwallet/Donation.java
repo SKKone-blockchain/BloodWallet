@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.contentcapture.DataRemovalRequest;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,13 +19,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import com.example.bloodwallet.contract.BloodWallet;
 import com.example.bloodwallet.retrofit.PayerResponse;
 import com.example.bloodwallet.retrofit.PayerService;
 import com.example.bloodwallet.task.PayerTask;
 import com.example.bloodwallet.task.WithProgressView;
+import com.example.bloodwallet.task.onGetDataListener;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.klaytn.caver.crypto.KlayCredentials;
 import com.klaytn.caver.methods.response.KlayTransactionReceipt;
 import com.klaytn.caver.utils.Convert;
@@ -37,11 +45,17 @@ import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import retrofit2.Retrofit;
@@ -59,9 +73,11 @@ public class Donation extends AppCompatActivity implements WithProgressView {
     private int current_num_smart_contract_call = 0;
     private String result_line = "";
     private int success = 0;
+    private int num_donated = 0;
 
     int i=1;
     private Spinner spinner;
+    private TextView holding_count;
     String userID;
     private static final String TAG = Donation.class.getSimpleName();
     private KlayCredentials mUserCredential;
@@ -74,7 +90,16 @@ public class Donation extends AppCompatActivity implements WithProgressView {
     private String mCurrentServiceURL;
     private PayerService mPayerService;
 
-    private String privateKey = "0xc305d195e88bc2022e052631ac7f2bafdc0c8fc7e31eafabe89647cea0de720c";
+    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+    private String receiver_public_key;
+    private ArrayList<String> available_certificates = new ArrayList<>();
+
+    // TODO: 넘어와야 하는 것: Writer, Post ID
+    private String writer = "666";
+    private String post_id = "김진범20201502121537";
+
+    // TODO: private key sharedPreference로 가져오기
+    private String privateKey = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +107,7 @@ public class Donation extends AppCompatActivity implements WithProgressView {
         setContentView(R.layout.activity_donation);
         mProgress = findViewById(R.id.view_progress);
         Intent intent2 = getIntent();
-        userID=intent2.getStringExtra("userID");
+        userID = intent2.getStringExtra("userID");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         ImageButton myInfoButton = findViewById(R.id.myinfobutton_donation);
@@ -94,11 +119,74 @@ public class Donation extends AppCompatActivity implements WithProgressView {
             }
         });
 
-//        SharedPreferences pref = getSharedPreferences(APP_NAME, MODE_PRIVATE);
-//        String privateKey = pref.getString(PRIVATE_KEY, null);
-
-
+        SharedPreferences pref = getSharedPreferences("KEY", MODE_PRIVATE);
+        String privateKey = pref.getString("PRIVATE_KEY", null);
+        System.out.println("Private Key: " + privateKey);
         assert privateKey != null;
+
+        // TODO: 기부 받을 사람의 Public key 가져오기
+        DatabaseReference public_ref = mDatabase.getReference("users/"+ writer + "/public_key");
+        public_ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                receiver_public_key = dataSnapshot.getValue(String.class);
+                System.out.println("receiver public key " + receiver_public_key);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+        DatabaseReference post_ref = mDatabase.getReference("posts/" + post_id + "/donatedNum");
+        post_ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                num_donated = dataSnapshot.getValue(Integer.class);
+                System.out.println("Donated number " + num_donated);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        // 기부자의 보유 헌혈증서 코드 모두 가져오기
+        DatabaseReference certificate_ref = mDatabase.getReference("certificates");
+        getCertificate(certificate_ref, userID, new onGetDataListener() {
+            @Override
+            public void onSuccess(DataSnapshot dataSnapshot) {
+                // 유저의 헌혈증 보유갯수 가져와야 함: Firebase 동기화 먼저
+                System.out.println("Success; available certificates: " + available_certificates.size());
+                int numOfCertificate = available_certificates.size();
+
+                holding_count = (TextView)findViewById(R.id.holding_count);
+                holding_count.setText(String.valueOf(numOfCertificate));
+
+                spinner = findViewById(R.id.donation_number);
+                String[] numberArray = new String[numOfCertificate];
+                for (int i = 0; i < numOfCertificate; i++)
+                {
+                    numberArray[i] = String.valueOf(i + 1);
+                }
+                ArrayAdapter<String> adapter = new ArrayAdapter<String>(Donation.this, R.layout.blood_type_spinner_item, numberArray);
+                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                spinner.setAdapter(adapter);
+            }
+
+            @Override
+            public void onStart() {
+                Log.d("On start", "Started");
+            }
+
+            @Override
+            public void onFailure() {
+                Log.d("onFailure", "Failed");
+            }
+        });
 
         mUserCredential = KlayCredentials.create(privateKey);
 
@@ -109,15 +197,6 @@ public class Donation extends AppCompatActivity implements WithProgressView {
                 CHAIN_ID,
                 new DefaultGasProvider()
         );
-
-
-
-//        BigInteger a = BigInteger.valueOf(0);
-//        System.out.println("big integer " + a);
-//        BigInteger b = BigInteger.valueOf(1);
-//        a = a.add(b);
-//        System.out.println("big integer added " + a);
-
 
         Button d = findViewById(R.id.doantion_donation);
         d.setOnClickListener(new View.OnClickListener() {
@@ -134,39 +213,22 @@ public class Donation extends AppCompatActivity implements WithProgressView {
 
 
 
-                                // TODO: 클레이튼 트랜잭션 전송하기
-                                num_smart_contract_call = 3;
+                                // 클레이튼 트랜잭션 전송하기
+                                // Timestamp 얻기
+                                num_smart_contract_call = Integer.parseInt(spinner.getSelectedItem().toString());
+                                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                                Date date = new Date();
+                                String timestamp = formatter.format(date);
 
-                                donate("0x5039d770becfa6ae56df428f4a3f413560b15678", "2020-05-23", "000-000-000");
-                                donate("0x5039d770becfa6ae56df428f4a3f413560b15678", "2020-05-24", "000-000-001");
-                                donate("0x5039d770becfa6ae56df428f4a3f413560b15678", "2020-05-25", "000-000-002");
+                                for (int j = 0; j < num_smart_contract_call; j++){
+                                    donate(receiver_public_key, timestamp, available_certificates.get(j));
+                                }
 
-
-
-
-
-//                                AlertDialog.Builder builder = new AlertDialog.Builder(Donation.this);
-//                                builder.setTitle("\n헌혈증 기부가 완료되었습니다.")
-//                                        .setMessage("감사합니다.")
-//                                        .setCancelable(false)// 뒤로버튼으로 취소금지
-//                                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
-//
-//                                            public void onClick(DialogInterface dialog, int whichButton) {
-//                                                dialog.cancel();
-//                                            }
-//                                        });
-//                                AlertDialog dialog2 = builder.create();
-//                                dialog2.show();
+//                                donate("0x5039d770becfa6ae56df428f4a3f413560b15678", "2020-05-23", "000-000-000");
 
                                 dialog.cancel();
                                 i = 0;
-
-                                // TODO : firebase 연동해서 기부 및 댓글 생성
-                                int numOfDonation = spinner.getSelectedItemPosition() + 1;
-                                EditText commentEditTextView = findViewById(R.id.donation_comment);
-                                String comment = commentEditTextView.getText().toString();
                             }
-
 
                         })
                         .setNegativeButton("아니오", new DialogInterface.OnClickListener() {
@@ -181,18 +243,6 @@ public class Donation extends AppCompatActivity implements WithProgressView {
             }
         });
 
-        // TODO : 유저의 헌혈증 보유갯수 가져와야 함
-        int numOfCertificate = 5;
-
-        spinner = findViewById(R.id.donation_number);
-        String[] numberArray = new String[numOfCertificate];
-        for (int i = 0; i < numOfCertificate; i++)
-        {
-            numberArray[i] = String.valueOf(i + 1);
-        }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.blood_type_spinner_item, numberArray);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
     }
 
 
@@ -268,7 +318,6 @@ public class Donation extends AppCompatActivity implements WithProgressView {
                         public void onClick(DialogInterface dialog, int whichButton) {
 
                             dialog.cancel();
-                            //TODO: main page로 intent 날리기
                             Intent intent = new Intent(Donation.this, MainInfo.class);
                             startActivity(intent);
                         }
@@ -276,12 +325,44 @@ public class Donation extends AppCompatActivity implements WithProgressView {
             AlertDialog dialog2 = builder.create();
             dialog2.show();
 
+            // Firebase에 정보 Update 하기기
+            DatabaseReference postReference = mDatabase.getReference("posts/" + post_id);
+
+            // 1. Post에 기부된 개수
+            Map<String, Object> postUpdate = new HashMap<>();
+            postUpdate.put("donatedNum", num_donated + 1);
+
+            // 2. Post에 comment 추가
+            EditText commentEditTextView = (EditText)findViewById(R.id.donation_comment);
+            String comment = commentEditTextView.getText().toString();
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+            Date date = new Date();
+            String timestamp = formatter.format(date);
+            postUpdate.put("comments/comment"+timestamp, new Comment(timestamp, comment, userID));
+
+            postReference.updateChildren(postUpdate);
+
+            // 3. 사용된 헌혈증서의 owner를 기부받은 사람으로 바꾸기
+            DatabaseReference certificate_owner_ref = mDatabase.getReference("certificates");
+            Map<String, Object> certificateUpdate = new HashMap<>();
+
+            for(int i = 0; i < success; i++){
+                certificateUpdate.put(available_certificates.get(i) + "/owner/owner_id", writer);
+            }
+            certificate_owner_ref.updateChildren(certificateUpdate);
+
+            // 4. User의 보유 헌혈증 개수 update하기
+            DatabaseReference user_ref = mDatabase.getReference("users/" + userID);
+            Map<String, Object> userUpdate = new HashMap<>();
+            userUpdate.put("holdingCount", available_certificates.size() - success);
+            user_ref.updateChildren(userUpdate);
+
+
             result_line = "";
             success = 0;
         }
 
     }
-
 
     @Override
     public void showProgress() {
@@ -292,5 +373,36 @@ public class Donation extends AppCompatActivity implements WithProgressView {
     public void hideProgress() {
         mProgress.setVisibility(View.GONE);
     }
+
+    public void getCertificate(DatabaseReference certificate_ref, String userID, final onGetDataListener listener){
+
+        listener.onStart();
+        certificate_ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                available_certificates.clear();
+
+                for (DataSnapshot certificateSnapshot : dataSnapshot.getChildren()){
+                    String code = certificateSnapshot.getKey();
+                    Owner ownership = certificateSnapshot.child("owner").getValue(Owner.class);
+
+                    // TODO: User ID 가져오기
+                    if(ownership.user_id.equals(ownership.owner_id) && ownership.hospital_code.isEmpty()){
+                        //Available
+                        System.out.println("available code " + code );
+                        available_certificates.add(code);
+                    }
+                }
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                listener.onFailure();
+            }
+        });
+
+    }
+
 
 }

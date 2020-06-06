@@ -3,7 +3,9 @@ package com.example.bloodwallet;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,12 +22,26 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.klaytn.caver.crypto.KlayCredentials;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.web3j.crypto.Keys;
+import org.web3j.utils.Numeric;
+
+import java.security.InvalidAlgorithmParameterException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.security.Provider;
+import java.security.Security;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Register_info extends AppCompatActivity {
     private FirebaseAuth mAuth;
     EditText ID;
     EditText PW;
     EditText name;
+    EditText Email;
     EditText birthdate;
     EditText sex;
     String PN;
@@ -41,6 +57,7 @@ public class Register_info extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         name = findViewById(R.id.register_name);
         ID = findViewById(R.id.register_id);
+        Email = findViewById(R.id.register_email);
         PW = findViewById(R.id.register_password);
         birthdate = findViewById(R.id.register_birthdate);
         sex = findViewById(R.id.register_sex);
@@ -65,26 +82,49 @@ public class Register_info extends AppCompatActivity {
             }
         });
 
-
+        setupBouncyCastle();
     }
-    private void register_info(){
+    private void register_info() throws InvalidAlgorithmParameterException, NoSuchAlgorithmException, NoSuchProviderException {
 
         String namestr = name.getText().toString();
-        String IDstr =ID.getText().toString().trim();
+        String IDstr = ID.getText().toString().trim();
+        String Emailstr = Email.getText().toString().trim();
         String PWstr = PW.getText().toString();
-        String birthdatestr=birthdate.getText().toString();
-        String sexstr=sex.getText().toString();
-        String[] IDdata = IDstr.split("@");
-        if(TextUtils.isEmpty(IDstr)){
-            Toast.makeText(getApplicationContext(), "아이디를 입력해 주세요.", Toast.LENGTH_SHORT).show();
+        String birthdatestr = birthdate.getText().toString();
+        String sexstr = sex.getText().toString();
+        String[] EmailData = Emailstr.split("@");
+        if (TextUtils.isEmpty(IDstr)) {
+            Toast.makeText(getApplicationContext(), "이메일을 입력해 주세요.", Toast.LENGTH_SHORT).show();
             return;
         }
-        User userinfo = new User(IDstr,namestr ,PWstr,birthdatestr,sexstr,PN);  // 유저 이름과 메세지로 chatData 만들기
-        databaseReference.child("users").child(IDdata[0]).setValue(userinfo);  // 기본 database 하위 message라는 child에 chatData를 list로 만들기
+
+        // TODO: private key, public key 생성 하기
+        KlayCredentials credentials = KlayCredentials.create(Keys.createEcKeyPair());
+        String privateKey = Numeric.toHexStringWithPrefix(credentials.getEcKeyPair().getPrivateKey());
+        String address = credentials.getAddress();
+
+        Log.d("private key: ", privateKey);
+        Log.d("address: ", address);
+
+        // TODO: public key는 firebase에 올리기
+
+        User userinfo = new User(Emailstr, IDstr, namestr, PWstr, birthdatestr, sexstr, PN, address);  // 유저 이름과 메세지로 chatData 만들기
+        Map<String, Object> new_user = new HashMap<>();
+        new_user.put(IDstr, userinfo);
+
+        DatabaseReference newUserRef = firebaseDatabase.getReference("users");
+        newUserRef.updateChildren(new_user); // child(IDdata[0]).setValue(userinfo);  // 기본 database 하위 message라는 child에 chatData를 list로 만들기
+
+        // TODO: private key는 sharedPreference에 저장하기
+        SharedPreferences sharedpreferences = getSharedPreferences("KEY", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedpreferences.edit();
+        editor.putString("PRIVATE_KEY", privateKey);
+        editor.commit();
+
     }
 
     private void register(){
-        String email = ID.getText().toString().trim();
+        String email = Email.getText().toString().trim();
         String password = PW.getText().toString().trim();
         if(TextUtils.isEmpty(email)){
             Toast.makeText(getApplicationContext(), "email을 입력해 주세요.", Toast.LENGTH_SHORT).show();
@@ -101,7 +141,18 @@ public class Register_info extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             Log.d("Register_info", "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            register_info();
+                            try {
+                                register_info();
+                            } catch (InvalidAlgorithmParameterException e) {
+                                System.out.println("Key generation error: " + e);
+                                e.printStackTrace();
+                            } catch (NoSuchAlgorithmException e) {
+                                System.out.println("Key generation error: " + e);
+                                e.printStackTrace();
+                            } catch (NoSuchProviderException e) {
+                                System.out.println("Key generation error: " + e);
+                                e.printStackTrace();
+                            }
                             Toast.makeText(getApplicationContext(), "회원가입이 완료되었습니다.", Toast.LENGTH_LONG).show();
                             Intent i = new Intent(Register_info.this, Login.class);
                             startActivity(i);
@@ -113,5 +164,22 @@ public class Register_info extends AppCompatActivity {
                     }
                 });
 
+    }
+    private void setupBouncyCastle() {
+        final Provider provider = Security.getProvider(BouncyCastleProvider.PROVIDER_NAME);
+        if (provider == null) {
+            // Web3j will set up the provider lazily when it's first used.
+            return;
+        }
+        if (provider.getClass().equals(BouncyCastleProvider.class)) {
+            // BC with same package name, shouldn't happen in real life.
+            return;
+        }
+        // Android registers its own BC provider. As it might be outdated and might not include
+        // all needed ciphers, we substitute it with a known BC bundled in the app.
+        // Android's BC has its package rewritten to "com.android.org.bouncycastle" and because
+        // of that it's possible to have another BC implementation loaded in VM.
+        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME);
+        Security.insertProviderAt(new BouncyCastleProvider(), 1);
     }
 }
