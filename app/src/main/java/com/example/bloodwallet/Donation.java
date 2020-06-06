@@ -36,6 +36,7 @@ import org.web3j.tx.gas.DefaultGasProvider;
 import org.web3j.utils.Numeric;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,10 +49,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.bloodwallet.Constants.CHAIN_ID;
 import static com.example.bloodwallet.Constants.CONTRACT_ADDRES;
+import static com.example.bloodwallet.Constants.NONCE_BIAS;
 import static com.example.bloodwallet.Constants.PRIVATE_KEY;
 import static com.example.bloodwallet.Constants.SCOPE_BASE_URL;
 
 public class Donation extends AppCompatActivity implements WithProgressView {
+
+    private int num_smart_contract_call = 0;
+    private int current_num_smart_contract_call = 0;
+    private String result_line = "";
+    private int success = 0;
 
     int i=1;
     private Spinner spinner;
@@ -103,6 +110,15 @@ public class Donation extends AppCompatActivity implements WithProgressView {
                 new DefaultGasProvider()
         );
 
+
+
+//        BigInteger a = BigInteger.valueOf(0);
+//        System.out.println("big integer " + a);
+//        BigInteger b = BigInteger.valueOf(1);
+//        a = a.add(b);
+//        System.out.println("big integer added " + a);
+
+
         Button d = findViewById(R.id.doantion_donation);
         d.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -119,23 +135,28 @@ public class Donation extends AppCompatActivity implements WithProgressView {
 
 
                                 // TODO: 클레이튼 트랜잭션 전송하기
-                                donate("0x5039d770becfa6ae56df428f4a3f413560b15678", "2020-05-23", "000-000-93");
+                                num_smart_contract_call = 3;
+
+                                donate("0x5039d770becfa6ae56df428f4a3f413560b15678", "2020-05-23", "000-000-000");
+                                donate("0x5039d770becfa6ae56df428f4a3f413560b15678", "2020-05-24", "000-000-001");
+                                donate("0x5039d770becfa6ae56df428f4a3f413560b15678", "2020-05-25", "000-000-002");
 
 
 
 
-                                AlertDialog.Builder builder = new AlertDialog.Builder(Donation.this);
-                                builder.setTitle("\n헌혈증 기부가 완료되었습니다.")
-                                        .setMessage("감사합니다.")
-                                        .setCancelable(false)// 뒤로버튼으로 취소금지
-                                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
 
-                                            public void onClick(DialogInterface dialog, int whichButton) {
-                                                dialog.cancel();
-                                            }
-                                        });
-                                AlertDialog dialog2 = builder.create();
-                                dialog2.show();
+//                                AlertDialog.Builder builder = new AlertDialog.Builder(Donation.this);
+//                                builder.setTitle("\n헌혈증 기부가 완료되었습니다.")
+//                                        .setMessage("감사합니다.")
+//                                        .setCancelable(false)// 뒤로버튼으로 취소금지
+//                                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+//
+//                                            public void onClick(DialogInterface dialog, int whichButton) {
+//                                                dialog.cancel();
+//                                            }
+//                                        });
+//                                AlertDialog dialog2 = builder.create();
+//                                dialog2.show();
 
                                 dialog.cancel();
                                 i = 0;
@@ -220,25 +241,47 @@ public class Donation extends AppCompatActivity implements WithProgressView {
     }
 
     private void onPayerResponse(PayerResponse resp) {
-        String msg;
+
+        current_num_smart_contract_call += 1;
 
         if (resp == null || resp.getError() != null) {
-            msg = resp == null ? "Failed to communicate with payer"
-                    : "Something went wrong: " + resp.getError();
+            result_line += resp == null ? "Fee Payer에 연결에 실패하였습니다.\n\n"
+                    : "기부에 실패하였습니다.: " + resp.getError() +"\n\n";
         } else {
-            msg = "Accepted; your TX hash is " + resp.getTxhash();
+            success ++;
+            result_line += "성공; Transaction Hash: " + resp.getTxhash() + "\n\n";
             Log.d(TAG , resp.getTxhash());
         }
 
-        // Show message
-        Snackbar.make(mProgress, msg, Snackbar.LENGTH_LONG).show();
+        if(current_num_smart_contract_call == num_smart_contract_call){
+            current_num_smart_contract_call = 0;
+            num_smart_contract_call = 0;
+            NONCE_BIAS = BigInteger.valueOf(0);
+            System.out.println("Reset nonce bias " + NONCE_BIAS);
 
-        // TODO start polling the result
+            AlertDialog.Builder builder = new AlertDialog.Builder(Donation.this);
+            builder.setTitle("\n헌혈증 기부가 완료되었습니다.")
+                    .setMessage(String.valueOf(success) +"개의 헌혈증 기부 성공!\n\n" + result_line)
+                    .setCancelable(false)// 뒤로버튼으로 취소금지
+                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                            dialog.cancel();
+                            //TODO: main page로 intent 날리기
+                            Intent intent = new Intent(Donation.this, MainInfo.class);
+                            startActivity(intent);
+                        }
+                    });
+            AlertDialog dialog2 = builder.create();
+            dialog2.show();
+
+            result_line = "";
+            success = 0;
+        }
+
     }
 
-    private Uri getScopeUri(String txHash) {
-        return Uri.parse(SCOPE_BASE_URL + "/tx/" + txHash);
-    }
 
     @Override
     public void showProgress() {
@@ -250,36 +293,4 @@ public class Donation extends AppCompatActivity implements WithProgressView {
         mProgress.setVisibility(View.GONE);
     }
 
-    private void onTransactionReceipt(KlayTransactionReceipt.TransactionReceipt receipt) {
-        String msg;
-
-        if (receipt == null) {
-            msg = "Something went wrong";
-        } else {
-            // BigDecimal is handy when dealing with large integers
-            BigDecimal gasUsed = Utils.hexToBigDecimal(receipt.getGasUsed());
-            BigDecimal gasPrice = Utils.hexToBigDecimal(receipt.getGasPrice());
-
-            // Convert the total amount of gas spent in KLAY using Convert.fromPeb
-            BigDecimal gasSpent = Convert.fromPeb(gasUsed.multiply(gasPrice), Convert.Unit.KLAY);
-
-            msg = gasSpent.toString() + " KLAY spent";
-        }
-
-        // Prepare Snackbar
-        Snackbar snackbar = Snackbar.make(mProgress, msg, Snackbar.LENGTH_LONG);
-
-        // Provide a Klaytnscope link for the (confirmed) transaction information
-        if (receipt != null) {
-            snackbar.setActionTextColor(getColor(R.color.white))
-                    .setAction("Open in Scope", view -> {
-                        Intent intent = new Intent(Intent.ACTION_VIEW);
-                        intent.setData(getScopeUri(receipt.getTransactionHash()));
-                        startActivity(intent);
-                    });
-        }
-
-        // Show message
-        snackbar.show();
-    }
 }

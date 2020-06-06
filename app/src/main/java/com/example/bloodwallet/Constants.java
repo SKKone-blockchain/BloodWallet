@@ -16,11 +16,12 @@ public class Constants {
     public static final BigInteger GAS_LIMIT = GAS_PROVIDER.getGasLimit();
     public static final BigInteger GAS_PRICE = BigInteger.valueOf(25000000000L);
     public static final DefaultBlockParameter BLOCK_PARAM = DefaultBlockParameterName.LATEST;
-    public static final String APP_NAME = "BAPP_COUNT";
+    public static final String APP_NAME = "BloodWallet";
     public static final String PRIVATE_KEY = "private_key";
     public static final String SCOPE_BASE_URL = "https://baobab.scope.klaytn.com";
     // For demonstration purpose, we use contract pre-deployed at the following address
     public static final String CONTRACT_ADDRES = "0xd69c2dc05c42866756f6f0e757566b4f5cfcabb0";
+    public static BigInteger NONCE_BIAS = BigInteger.valueOf(0);
     // FYI, the contract we use for this app looks like this:
     /*
         pragma solidity ^0.4.18;

@@ -21,6 +21,8 @@ import static com.example.bloodwallet.Constants.BLOCK_PARAM;
 import static com.example.bloodwallet.Constants.CHAIN_ID;
 import static com.example.bloodwallet.Constants.GAS_LIMIT;
 import static com.example.bloodwallet.Constants.GAS_PRICE;
+import static com.example.bloodwallet.Constants.NONCE_BIAS;
+
 
 public class PayerTask extends AsyncTask<Object, Void, PayerResponse> {
     private static final String TAG = PayerTask.class.getSimpleName();
@@ -53,7 +55,12 @@ public class PayerTask extends AsyncTask<Object, Void, PayerResponse> {
             BigInteger nonce = CaverFactory.get().klay().getTransactionCount(
                     sender.getAddress(),
                     BLOCK_PARAM
-            ).send().getValue();
+            ).send().getValue().add(NONCE_BIAS);
+
+            System.out.println("Nonce " + nonce);
+            System.out.println("Bias " + NONCE_BIAS);
+
+            NONCE_BIAS = NONCE_BIAS.add(BigInteger.valueOf(1));
 
             // Create transaction
             TxTypeFeeDelegatedSmartContractExecution tx =
