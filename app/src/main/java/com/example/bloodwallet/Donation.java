@@ -95,8 +95,8 @@ public class Donation extends AppCompatActivity implements WithProgressView {
     private ArrayList<String> available_certificates = new ArrayList<>();
 
     // TODO: 넘어와야 하는 것: Writer, Post ID
-    private String writer = "666";
-    private String post_id = "김진범20201502121537";
+    private String writer = "eido";
+    private String post_id = "post1";
 
     // TODO: private key sharedPreference로 가져오기
     private String privateKey = "";
@@ -140,7 +140,7 @@ public class Donation extends AppCompatActivity implements WithProgressView {
         });
 
 
-        DatabaseReference post_ref = mDatabase.getReference("posts/" + post_id + "/donatedNum");
+        DatabaseReference post_ref = mDatabase.getReference("posts/" + post_id + "/donated_num");
         post_ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -162,6 +162,24 @@ public class Donation extends AppCompatActivity implements WithProgressView {
                 // 유저의 헌혈증 보유갯수 가져와야 함: Firebase 동기화 먼저
                 System.out.println("Success; available certificates: " + available_certificates.size());
                 int numOfCertificate = available_certificates.size();
+
+                if (numOfCertificate <= 0){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(Donation.this);
+                    builder.setTitle("\n죄송합니다.")
+                            .setMessage("보유한 헌혈 증서가 없습니다.")
+                            .setCancelable(false)// 뒤로버튼으로 취소금지
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int whichButton) {
+
+                                    dialog.cancel();
+                                    Intent intent = new Intent(Donation.this, StoryListActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+                    AlertDialog dialog2 = builder.create();
+                    dialog2.show();
+                }
 
                 holding_count = (TextView)findViewById(R.id.holding_count);
                 holding_count.setText(String.valueOf(numOfCertificate));
@@ -328,7 +346,7 @@ public class Donation extends AppCompatActivity implements WithProgressView {
 
             // 1. Post에 기부된 개수
             Map<String, Object> postUpdate = new HashMap<>();
-            postUpdate.put("donatedNum", num_donated + 1);
+            postUpdate.put("donated_num", num_donated + 1);
 
             // 2. Post에 comment 추가
             EditText commentEditTextView = (EditText)findViewById(R.id.donation_comment);
@@ -354,6 +372,14 @@ public class Donation extends AppCompatActivity implements WithProgressView {
             Map<String, Object> userUpdate = new HashMap<>();
             userUpdate.put("holdingCount", available_certificates.size() - success);
             user_ref.updateChildren(userUpdate);
+
+            // 5. User의 기부 내역
+            DatabaseReference donation_ref = mDatabase.getReference("users/" + userID +"/donations");
+            Map<String, Object> donationUpdate = new HashMap<>();
+            for(int i = 0; i < success; i++){
+                donationUpdate.put(available_certificates.get(i), post_id);
+            }
+            donation_ref.updateChildren(donationUpdate);
 
 
             result_line = "";
