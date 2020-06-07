@@ -28,6 +28,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.web3j.crypto.Keys;
 import org.web3j.utils.Numeric;
 
+import java.io.DataOutputStream;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
@@ -37,19 +38,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Register_info extends AppCompatActivity {
-    private FirebaseAuth mAuth;
+
     EditText ID;
     EditText PW;
     EditText name;
     EditText Email;
     EditText birthdate;
-    EditText sex;
+    String sex;
     String PN;
+
+    private FirebaseAuth mAuth;
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = firebaseDatabase.getReference();
 
-
     Button Register_registerinfo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,11 +63,29 @@ public class Register_info extends AppCompatActivity {
         Email = findViewById(R.id.register_email);
         PW = findViewById(R.id.register_password);
         birthdate = findViewById(R.id.register_birthdate);
-        sex = findViewById(R.id.register_sex);
+
+        sex = "";
+        Button maleButton = findViewById(R.id.register_male);
+        Button femaleButton = findViewById(R.id.register_female);
+        maleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sex = "male";
+                maleButton.setBackgroundColor(getColor(R.color.colorPrimary));
+                femaleButton.setBackgroundColor(getColor(R.color.colorInactive));
+            }
+        });
+        femaleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sex = "female";
+                maleButton.setBackgroundColor(getColor(R.color.colorInactive));
+                femaleButton.setBackgroundColor(getColor(R.color.colorPrimary));
+            }
+        });
 
         Intent intent = getIntent();
         PN=intent.getStringExtra("PN");
-
 
         Button f = findViewById(R.id.Register_registerinfo);
         f.setOnClickListener(new View.OnClickListener() {
@@ -72,7 +93,6 @@ public class Register_info extends AppCompatActivity {
                 register();
             }
         });
-
 
         Button g = findViewById(R.id.backbutton_registerinfo);
         g.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +111,6 @@ public class Register_info extends AppCompatActivity {
         String Emailstr = Email.getText().toString().trim();
         String PWstr = PW.getText().toString();
         String birthdatestr = birthdate.getText().toString();
-        String sexstr = sex.getText().toString();
         String[] EmailData = Emailstr.split("@");
         if (TextUtils.isEmpty(IDstr)) {
             Toast.makeText(getApplicationContext(), "이메일을 입력해 주세요.", Toast.LENGTH_SHORT).show();
@@ -108,7 +127,7 @@ public class Register_info extends AppCompatActivity {
 
         // TODO: public key는 firebase에 올리기
 
-        User userinfo = new User(Emailstr, IDstr, namestr, PWstr, birthdatestr, sexstr, PN, address);  // 유저 이름과 메세지로 chatData 만들기
+        User userinfo = new User(Emailstr, IDstr, namestr, PWstr, birthdatestr, sex, PN, address);  // 유저 이름과 메세지로 chatData 만들기
         Map<String, Object> new_user = new HashMap<>();
         new_user.put(IDstr, userinfo);
 
@@ -127,12 +146,23 @@ public class Register_info extends AppCompatActivity {
     private void register(){
         String email = Email.getText().toString().trim();
         String password = PW.getText().toString().trim();
-        if(TextUtils.isEmpty(email)){
+        if (name.getText().length() <= 0) {
+            Toast.makeText(this, "이름을 입력해주세요", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (ID.getText().length() <= 0) {
+            Toast.makeText(getApplicationContext(), "아이디를 입력해주세요", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (email.length() <= 0) {
             Toast.makeText(getApplicationContext(), "email을 입력해 주세요.", Toast.LENGTH_SHORT).show();
             return;
-        }
-        if(TextUtils.isEmpty(password)){
-            Toast.makeText(getApplicationContext(), "password를 입력해 주세요.", Toast.LENGTH_SHORT).show();
+        } else if (password.length() < 6) {
+            Toast.makeText(getApplicationContext(), "6자리 이상의 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (birthdate.getText().length() != 6) {
+            Toast.makeText(this, "생일을 yyMMdd 형태로 입력해주세요", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (sex.length() <= 0) {
+            Toast.makeText(this, "성별을 선택해주세요", Toast.LENGTH_SHORT).show();
             return;
         }
         mAuth.createUserWithEmailAndPassword(email, password)
