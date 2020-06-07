@@ -1,0 +1,12 @@
+#!/bin/bash
+
+export FEE_PAYER_KEY=0xc305d195e88bc2022e052631ac7f2bafdc0c8fc7e31eafabe89647cea0de720c
+export FEE_PAYER_ADDRESS=0x5039d770becfa6ae56df428f4a3f413560b15678
+
+
+# [Public key]
+# 0x5039d770becfa6ae56df428f4a3f413560b15678
+# [Private key]
+# 0xc305d195e88bc2022e052631ac7f2bafdc0c8fc7e31eafabe89647cea0de720c
+# [Wallet key]
+# 0xc305d195e88bc2022e052631ac7f2bafdc0c8fc7e31eafabe89647cea0de720c0x000x5039d770becfa6ae56df428f4a3f413560b15678
