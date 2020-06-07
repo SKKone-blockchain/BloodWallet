@@ -1,9 +1,12 @@
 package com.example.bloodwallet;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 public class DonationsRecievedListReading extends LinearLayout {
 
@@ -36,4 +39,5 @@ public class DonationsRecievedListReading extends LinearLayout {
     public void percent(String percent){
         RecievedpercentView.setText(percent);
     }
+
 }

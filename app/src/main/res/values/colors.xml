@@ -7,4 +7,6 @@
     <color name="colorActionBarText">#000000</color>
     <color name="colorHorizontalLine">#434141</color>
     <color name="colorInactive">#D8D8D8</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black_50">#80000000</color>
 </resources>

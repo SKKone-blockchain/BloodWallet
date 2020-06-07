@@ -9,22 +9,24 @@ public class User {
         private String id;
         private String pw;
         private String phone_number;
-//        private String public_key;
+        private String public_key;
         private String sex;
+        private String email;
         public User() {}
 //String keyword1, String keyword2, String keyword3,
     //,String public_key
     //,String phone_number
-        public User(String ID, String name , String PW , String birthdate, String sex,String phone_number){
+        public User(String email, String ID, String name , String PW , String birthdate, String sex,String phone_number, String public_key){
             this.name=name;
             this.id=ID;
+            this.email = email;
            /* this.keyword1=keyword1;
             this.keyword2=keyword2;
             this.keyword3=keyword3;*/
             this.birthdate=birthdate;
             this.pw=PW;
             this.phone_number=phone_number;
-            //this.public_key=public_key;
+            this.public_key= public_key;
             this.sex=sex;
         }
 
@@ -52,9 +54,9 @@ public class User {
         public String getPhone_number() {
             return phone_number;
         }
-//        public String getPublic_key() {
-//            return public_key;
-//        }
+        public String getPublic_key() {
+            return public_key;
+        }
         public String getSex() {
             return this.sex;
         }
@@ -83,9 +85,9 @@ public class User {
         public void setPhone_number(String phone_number) {
             this.phone_number=phone_number;
         }
-//        public void setPublic_key(String public_key) {
-//            this.public_key=public_key;
-//        }
+        public void setPublic_key(String public_key) {
+            this.public_key=public_key;
+        }
         public void setSex(String sex) {
             this.sex=sex;
         }
