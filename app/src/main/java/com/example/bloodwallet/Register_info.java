@@ -119,6 +119,7 @@ public class Register_info extends AppCompatActivity {
         SharedPreferences sharedpreferences = getSharedPreferences("KEY", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedpreferences.edit();
         editor.putString("PRIVATE_KEY", privateKey);
+        editor.putString("PUBLIC_KEY", address);
         editor.commit();
 
     }

@@ -224,8 +224,6 @@ public class Donation extends AppCompatActivity implements WithProgressView {
                                     donate(receiver_public_key, timestamp, available_certificates.get(j));
                                 }
 
-//                                donate("0x5039d770becfa6ae56df428f4a3f413560b15678", "2020-05-23", "000-000-000");
-
                                 dialog.cancel();
                                 i = 0;
                             }
