@@ -96,7 +96,7 @@
             android:layout_marginVertical="10dp"
             android:layout_weight="3"
             android:clickable="true"
-            android:gravity="center_vertical|right"
+            android:gravity="center_vertical"
             android:paddingRight="5dp"
             android:background="@drawable/border"/>
         <EditText
@@ -106,7 +106,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginVertical="10dp"
             android:layout_weight="3"
-            android:gravity="center_vertical|right"
+            android:gravity="center_vertical"
             android:paddingRight="5dp"
             android:clickable="true"
             android:background="@drawable/border"/>
@@ -118,7 +118,7 @@
             android:layout_weight="3"
             android:paddingRight="5dp"
             android:layout_marginVertical="10dp"
-            android:gravity="center_vertical|right"
+            android:gravity="center_vertical"
             android:clickable="true"
             android:background="@drawable/border"/>
     </LinearLayout>

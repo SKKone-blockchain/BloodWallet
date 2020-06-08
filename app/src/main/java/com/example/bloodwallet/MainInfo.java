@@ -2,6 +2,7 @@ package com.example.bloodwallet;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +23,6 @@ public class MainInfo extends AppCompatActivity {
 
         Intent intent = getIntent();
         userID=intent.getStringExtra("userID");
-        System.out.println(userID);
 
         Button donationlistbutton=findViewById(R.id.donationlistbutton_maininfo);
         donationlistbutton.setOnClickListener(new View.OnClickListener(){

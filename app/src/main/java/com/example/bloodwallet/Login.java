@@ -130,7 +130,7 @@ public class Login extends AppCompatActivity {
                             startActivity(i);
                         } else {
                             Log.w("Login", "signInWithEmail:failure", task.getException());
-                            Toast.makeText(Login.this, "로그인 실패!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Login.this, "이메일 또는 비밀번호가 틀렸습니다", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

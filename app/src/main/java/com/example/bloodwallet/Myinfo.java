@@ -2,14 +2,12 @@ package com.example.bloodwallet;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class Myinfo extends AppCompatActivity {
 
@@ -57,56 +56,48 @@ public class Myinfo extends AppCompatActivity {
         keyword2 = findViewById(R.id.myinfo_keyword2);
         keyword3 = findViewById(R.id.myinfo_keyword3);
         userID=intent.getStringExtra("userID");
-        databaseReference = firebaseDatabase.getReference();
-        getFirebaseDatabase();
+        getKeywordsFromFirebase(userID);
         name_myinfo=(TextView)findViewById(R.id.name_myinfo);
         age_myinfo=findViewById(R.id.age_myinfo);
         sex_myinfo=findViewById(R.id.sex_myinfo);
 
-        //
-        //
-        Button b=findViewById(R.id.myinfo_save);
-        b.setOnClickListener(new View.OnClickListener() {
+        Button saveButton = findViewById(R.id.myinfo_save);
+        saveButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                keyword_update();
+                keywordUpdate();
             }
         });
     }
-    private void keyword_update(){
 
-        String keyword1str = keyword1.getText().toString();
-        String keyword2str =keyword2.getText().toString().trim();
-        String keyword3str = keyword3.getText().toString();
-        Userkeywords userkeywords = new Userkeywords(keyword1str,keyword2str,keyword3str);  // 유저 이름과 메세지로 chatData 만들기
-        databaseReference.child("users").child(userID).child("keywords").setValue(userkeywords);  // 기본 database 하위 message라는 child에 chatData를 list로 만들기
+    private void keywordUpdate() {
+        String keyword1str = keyword1.getText().toString().trim();
+        String keyword2str = keyword2.getText().toString().trim();
+        String keyword3str = keyword3.getText().toString().trim();
+        Userkeywords userkeywords = new Userkeywords(userID, keyword1str, keyword2str, keyword3str);  // 유저 이름과 메세지로 chatData 만들기
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("Keyword");
+        database.child(userID).setValue(userkeywords);  // 기본 database 하위 message라는 child에 chatData를 list로 만들기
     }
-    public void getFirebaseDatabase(){
-        user_map2.clear();
-        ValueEventListener postListener = new ValueEventListener() {
+
+    public void getKeywordsFromFirebase(String userID) {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("Keyword");
+        database.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot postSnaphot : dataSnapshot.getChildren()) {
-                    User temp_user2 = postSnaphot.getValue(User.class);
-                    Userkeywords temp_user3 = postSnaphot.child("keywords").getValue(Userkeywords.class);
-                    String cmp=temp_user2.getID().split("@")[0];
-                    if (cmp.equals(userID)) {
-                        //user_map2.put(temp_user2.getName(), temp_user2);
-                        name=temp_user2.getName();
-                        name_myinfo.setText(name);
-                        sex=temp_user2.getSex();
-                        sex_myinfo.setText(sex);
-                        age=temp_user2.getBirthdate();
-                        age_myinfo.setText(age);
-                        String k1=temp_user3.getKeyword1();
-                        keyword1.setText(k1);
-                        String k2=temp_user3.getKeyword2();
-                        keyword2.setText(k2);
-                        String k3=temp_user3.getKeyword3();
-                        keyword3.setText(k3);
-
+                HashMap<String, HashMap> keywords = (HashMap)dataSnapshot.getValue();
+                for (Map.Entry<String, HashMap> entry : keywords.entrySet()) {
+                    HashMap keywordMap = entry.getValue();
+                    if (keywordMap.get("userID").equals(userID)) {
+                        if (keywordMap.get("keyword1") != null) {
+                            keyword1.setText(keywordMap.get("keyword1").toString());
+                        }
+                        if (keywordMap.get("keyword2") != null) {
+                            keyword2.setText(keywordMap.get("keyword2").toString());
+                        }
+                        if (keywordMap.get("keyword3") != null) {
+                            keyword3.setText(keywordMap.get("keyword3").toString());
+                        }
+                        break;
                     }
-
                 }
             }
 
@@ -114,8 +105,7 @@ public class Myinfo extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
-        };
-        databaseReference.child("users").addValueEventListener(postListener);
+        });
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
