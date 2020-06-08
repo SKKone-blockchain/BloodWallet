@@ -58,9 +58,10 @@ public class StoryListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public void addItem(HashMap post) {
+    public void addItem(String postID, HashMap post) {
         StoryListItem item = new StoryListItem();
 
+        item.postID = postID;
         item.title = post.get("title").toString();
         item.content = post.get("content").toString();
         item.summary = post.get("abstract").toString();

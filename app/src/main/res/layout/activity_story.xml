@@ -75,7 +75,7 @@
                     android:id="@+id/story_patient_id"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="asdf"
+                    android:text=""
                     android:textSize="15sp"
                     android:textStyle="bold"/>
 
@@ -97,7 +97,7 @@
                     android:id="@+id/story_patient_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="만24세, 남자"
+                    android:text=""
                     android:textSize="15sp"
                     android:textStyle="bold"/>
 
@@ -174,15 +174,12 @@
                 android:text="응원메세지"
                 android:textColor="@color/colorPrimary"
                 android:textSize="20sp"
-                android:gravity="center_vertical"
-                />
-
+                android:gravity="center_vertical"/>
 
             <ListView
                 android:id="@+id/messages"
                 android:layout_width="match_parent"
-                android:layout_height="319dp"
-                android:layout_marginRight="20dp"/>
+                android:layout_height="wrap_content"/>
 
         </LinearLayout>
 

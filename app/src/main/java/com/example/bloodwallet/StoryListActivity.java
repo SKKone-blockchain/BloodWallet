@@ -51,6 +51,7 @@ public class StoryListActivity extends AppCompatActivity {
                 Intent i = new Intent(StoryListActivity.this , StoryActivity.class);
                 i.putExtra("userID",userID);
                 StoryListItem item = (StoryListItem)listView.getItemAtPosition(position);
+                i.putExtra("postID", item.postID);
                 i.putExtra("title", item.title);
                 i.putExtra("content", item.content);
                 i.putExtra("donatedNum", item.donatedNum);
@@ -70,7 +71,7 @@ public class StoryListActivity extends AppCompatActivity {
                 HashMap<String, HashMap> posts = (HashMap)dataSnapshot.getValue();
                 for (Map.Entry<String, HashMap> entry : posts.entrySet()) {
                     HashMap post = entry.getValue();
-                    listViewAdapter.addItem(post);
+                    listViewAdapter.addItem(entry.getKey(), post);
                 }
 
                 listView.setAdapter(listViewAdapter);
@@ -82,8 +83,6 @@ public class StoryListActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

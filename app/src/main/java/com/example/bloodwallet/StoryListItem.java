@@ -6,6 +6,7 @@ public class StoryListItem {
     public String summary;
     public int donatedNum;
     public int goalNum;
+    public String postID;
 
     public String getTitle() {
         return title;
