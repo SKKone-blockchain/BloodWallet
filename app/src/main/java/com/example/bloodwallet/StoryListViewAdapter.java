@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -41,16 +43,17 @@ public class StoryListViewAdapter extends BaseAdapter {
 
         TextView storyTitle = (TextView) convertView.findViewById(R.id.story_list_title);
         TextView storySummary = (TextView) convertView.findViewById(R.id.story_list_summary);
-        TextView uploadTime = (TextView) convertView.findViewById(R.id.story_list_time);
-        TextView percent = (TextView) convertView.findViewById(R.id.story_list_percent);
+        TextView storyPercentText = convertView.findViewById(R.id.story_list_percent_text);
+        CircularProgressBar storyPercent = convertView.findViewById(R.id.story_list_percent);
+        storyPercent.setProgressBarColor(convertView.getResources().getColor(R.color.colorPrimary));
 
         StoryListItem listViewItem = listViewItemList.get(position);
 
         // 아이템 내 각 위젯에 데이터 반영
         storyTitle.setText(listViewItem.getTitle());
         storySummary.setText(listViewItem.getSummary());
-        uploadTime.setText(listViewItem.getUploadTime());
-        percent.setText(listViewItem.getPercent());
+        storyPercentText.setText(listViewItem.getPercent() + "%");
+        storyPercent.setProgress(listViewItem.getPercent());
 
         return convertView;
     }
@@ -61,7 +64,6 @@ public class StoryListViewAdapter extends BaseAdapter {
         item.title = post.get("title").toString();
         item.content = post.get("content").toString();
         item.summary = post.get("abstract").toString();
-        item.uploadTime = "10:22PM";
         item.donatedNum = Integer.parseInt(post.get("donated_num").toString());
         item.goalNum = Integer.parseInt(post.get("goal_num").toString());
 

@@ -4,7 +4,6 @@ public class StoryListItem {
     public String title;
     public String content;
     public String summary;
-    public String uploadTime;
     public int donatedNum;
     public int goalNum;
 
@@ -20,12 +19,8 @@ public class StoryListItem {
         return summary;
     }
 
-    public String getUploadTime() {
-        return uploadTime;
-    }
-
-    public String getPercent() {
+    public int getPercent() {
         double percent = (double) donatedNum / goalNum * 100;
-        return (int)percent + "%";
+        return (int)percent;
     }
 }
