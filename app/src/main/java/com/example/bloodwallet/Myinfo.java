@@ -27,19 +27,18 @@ import java.util.*;
 
 public class Myinfo extends AppCompatActivity {
 
-
-    private FirebaseAuth firebaseAuth;
-    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
-    private DatabaseReference databaseReference;
     EditText keyword1;
     EditText keyword2;
     EditText keyword3;
     TextView sex_myinfo;
     TextView age_myinfo;
     TextView name_myinfo;
+    TextView certificationNumTextView;
+
     String name;
     String sex;
     String age;
+
     HashMap<String, User> user_map2 = new HashMap<>();
 
     String userID;
@@ -62,9 +61,11 @@ public class Myinfo extends AppCompatActivity {
         name_myinfo = findViewById(R.id.name_myinfo);
         age_myinfo = findViewById(R.id.age_myinfo);
         sex_myinfo = findViewById(R.id.sex_myinfo);
+        certificationNumTextView = findViewById(R.id.myinfo_certification_num);
 
         getKeywordsFromFirebase(userID);
         loadUserInfoFromFirebase();
+        loadNumOfCertification();
 
         Button saveButton = findViewById(R.id.myinfo_save);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -142,6 +143,7 @@ public class Myinfo extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
@@ -153,4 +155,29 @@ public class Myinfo extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    private void loadNumOfCertification() {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("certificates");
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int count = 0;
+                HashMap<String, HashMap> certificates = (HashMap)dataSnapshot.getValue();
+                for (Map.Entry<String, HashMap> entry : certificates.entrySet()) {
+                    HashMap certificateMap = entry.getValue();
+                    HashMap<String, String> owner = (HashMap) certificateMap.get("owner");
+                    String ownerID = owner.get("owner_id").toString();
+                    if (userID.equals(ownerID)) {
+                        count++;
+                    }
+                }
+
+                certificationNumTextView.setText(count + "개");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
 }
