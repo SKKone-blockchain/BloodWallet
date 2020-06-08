@@ -2,7 +2,6 @@ package com.example.bloodwallet;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -21,8 +20,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.*;
 
 public class Myinfo extends AppCompatActivity {
 
@@ -51,15 +52,19 @@ public class Myinfo extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_myinfo);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         Intent intent = getIntent();
+        userID = intent.getStringExtra("userID");
+
         keyword1 = findViewById(R.id.myinfo_keyword1);
         keyword2 = findViewById(R.id.myinfo_keyword2);
         keyword3 = findViewById(R.id.myinfo_keyword3);
-        userID=intent.getStringExtra("userID");
+        name_myinfo = findViewById(R.id.name_myinfo);
+        age_myinfo = findViewById(R.id.age_myinfo);
+        sex_myinfo = findViewById(R.id.sex_myinfo);
+
         getKeywordsFromFirebase(userID);
-        name_myinfo=(TextView)findViewById(R.id.name_myinfo);
-        age_myinfo=findViewById(R.id.age_myinfo);
-        sex_myinfo=findViewById(R.id.sex_myinfo);
+        loadUserInfoFromFirebase();
 
         Button saveButton = findViewById(R.id.myinfo_save);
         saveButton.setOnClickListener(new View.OnClickListener() {
@@ -76,6 +81,36 @@ public class Myinfo extends AppCompatActivity {
         Userkeywords userkeywords = new Userkeywords(userID, keyword1str, keyword2str, keyword3str);  // 유저 이름과 메세지로 chatData 만들기
         DatabaseReference database = FirebaseDatabase.getInstance().getReference("Keyword");
         database.child(userID).setValue(userkeywords);  // 기본 database 하위 message라는 child에 chatData를 list로 만들기
+    }
+
+    private void loadUserInfoFromFirebase() {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("users/" + userID);
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                HashMap<String, String> userInfo = (HashMap)dataSnapshot.getValue();
+
+                String name = userInfo.get("name").toString();
+                name_myinfo.setText(name);
+
+                String sex = userInfo.get("sex").toString();
+                sex = (sex.equals("male"))? "남자" : "여자";
+                sex_myinfo.setText(sex);
+
+                String birthDate = userInfo.get("birthdate").toString();
+                int userYear = Integer.parseInt(birthDate.substring(0, 2)) + 1900;
+                SimpleDateFormat formatter = new SimpleDateFormat("yyMMdd");
+                Date date = new Date(System.currentTimeMillis());
+                String today = formatter.format(date);
+                int year = Integer.parseInt(today.substring(0, 2)) + 2000;
+                age_myinfo.setText((year - userYear + 1) + "세");
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void getKeywordsFromFirebase(String userID) {

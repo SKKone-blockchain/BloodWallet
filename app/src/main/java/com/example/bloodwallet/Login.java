@@ -28,7 +28,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,7 +42,6 @@ public class Login extends AppCompatActivity {
     EditText ID;
     EditText PW;
     Button loginbutton_login;
-    String userID;
     HashMap<String, User> user_map = new HashMap<>();
 //    {"park": user_instancee, "sungyoun":user_instance}
     @Override
@@ -55,13 +56,10 @@ public class Login extends AppCompatActivity {
         ID = findViewById(R.id.login_id);
         PW = findViewById(R.id.login_password);
 
-        if(firebaseAuth.getCurrentUser() != null){
-            userID = firebaseAuth.getCurrentUser().getEmail().split("@")[0];
-                Intent intent=new Intent(this,MainInfo.class);
-                intent.putExtra("userID",userID);
-            getFirebaseDatabase();
-            finish();
-            startActivity(intent);
+        if(firebaseAuth.getCurrentUser() != null) {
+            String email = firebaseAuth.getCurrentUser().getEmail();
+            ID.setText(email);
+            loadUserID(email);
         }
 
         loginbutton_login.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +76,38 @@ public class Login extends AppCompatActivity {
         });
 
         getFirebaseDatabase();
+    }
 
+    private void loadUserID(String userEmail) {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("users");
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                HashMap<String, HashMap> userInfo = (HashMap)dataSnapshot.getValue();
+                for (Map.Entry<String, HashMap> entry : userInfo.entrySet()) {
+                    HashMap userMap = entry.getValue();
+                    if (userMap.get("email") == null) {
+                        continue;
+                    }
+                    String email = userMap.get("email").toString();
+                    if (email.equals(userEmail)) {
+                        String userID = userMap.get("id").toString();
+                        Toast.makeText(Login.this, userID+"님 환영합니다." , Toast.LENGTH_LONG).show();
+
+                        Intent intent = new Intent(Login.this, MainInfo.class);
+                        intent.putExtra("userID", userID);
+                        getFirebaseDatabase();
+                        finish();
+                        startActivity(intent);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     public void getFirebaseDatabase(){
@@ -120,14 +149,7 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            Log.d("Login", "signInWithEmail:success");
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
-                            userID=ID.getText().toString().trim().split("@")[0];
-
-                            Toast.makeText(Login.this, userID+"님 환영합니다." , Toast.LENGTH_LONG).show();
-                            Intent i = new Intent(Login.this, MainInfo.class);
-                            i.putExtra("userID",userID);
-                            startActivity(i);
+                            loadUserID(email);
                         } else {
                             Log.w("Login", "signInWithEmail:failure", task.getException());
                             Toast.makeText(Login.this, "이메일 또는 비밀번호가 틀렸습니다", Toast.LENGTH_LONG).show();
