@@ -28,7 +28,7 @@
 
 
     <EditText
-        android:id="@+id/register_id"
+        android:id="@+id/register_name"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="100dp"
@@ -41,7 +41,7 @@
         android:paddingLeft="10dp" />
 
     <EditText
-        android:id="@+id/register_id4"
+        android:id="@+id/register_id"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="100dp"
@@ -67,7 +67,7 @@
         android:background="@drawable/border"/>
 
     <EditText
-        android:id="@+id/register_phoneNo"
+        android:id="@+id/register_birthdate"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="100dp"
@@ -80,7 +80,7 @@
         android:paddingLeft="10dp" />
 
     <EditText
-        android:id="@+id/register_code"
+        android:id="@+id/register_sex"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginHorizontal="100dp"

@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:text="취소"
-        app:layout_constraintEnd_toStartOf="@+id/button2"
         app:layout_constraintStart_toStartOf="parent"
         tools:layout_editor_absoluteY="80dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

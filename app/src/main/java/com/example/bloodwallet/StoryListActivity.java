@@ -1,5 +1,4 @@
 package com.example.bloodwallet;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,77 +20,158 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.ArrayList;
-import java.util.Collections;
-
-import static java.lang.Integer.min;
+import java.util.HashMap;
+import java.util.Map;
 
 public class StoryListActivity extends AppCompatActivity {
 
+    final String[] keywords = new String[3];
+
     private StoryListViewAdapter listViewAdapter;
-    ListView listView;
-
-    private ArrayList<String> keyword = new ArrayList<>();
-    private ArrayList<Post> posts = new ArrayList<>();
-    private ArrayList<ScoredPostList> postLists = new ArrayList<>();
-    private DatabaseReference myPostRef;
-    private DatabaseReference myKeywordRef;
-
-
-
-
+    String userID;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_list);
+        Intent intent = getIntent();
 
-        myPostRef = FirebaseDatabase.getInstance().getReference();
-        myKeywordRef = FirebaseDatabase.getInstance().getReference();
-
-        String userID = "김진범";
-        KwTask kwt = new KwTask();
-        kwt.execute(userID);
-
-        PostTask pt = new PostTask();
-        pt.execute();
-
-        get_postList();
-        Collections.sort(postLists);
-        System.out.println("postLists size after getFirebase "+postLists.size());
-
+        //userID=intent.getStringExtra("userID");
+        userID = "김진범";
         ImageButton f = findViewById(R.id.myinfobutton_list);
         f.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(  StoryListActivity.this , Myinfo.class );
+                i.putExtra("userID",userID);
                 startActivity(i);
             }
         });
 
         listViewAdapter = new StoryListViewAdapter();
 
-        for (int i=0; i<min(15, postLists.size()); i++) {
-            listViewAdapter.addItem(null, postLists.get(i).post.title, postLists.get(i).post.summary, "10:22PM", postLists.get(i).percent);
-        }
-
-        listView = (ListView) findViewById(R.id.story_list);
-        listView.setAdapter(listViewAdapter);
+        final ListView listView = (ListView) findViewById(R.id.story_list);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(  StoryListActivity.this , StoryActivity.class );
-                i.putExtra("title","홍길동"); /*제목송신*/
-                i.putExtra("Button_on",1);
+                Intent i = new Intent(StoryListActivity.this , StoryActivity.class);
+                i.putExtra("userID",userID);
+                StoryListItem item = (StoryListItem)listView.getItemAtPosition(position);
+                i.putExtra("title", item.title);
+                i.putExtra("content", item.content);
+                i.putExtra("donatedNum", item.donatedNum);
+                i.putExtra("goalNum", item.goalNum);
                 startActivity(i);
+            }
+        });
+
+
+        DatabaseReference kwref = FirebaseDatabase.getInstance().getReference("Keyword");
+        kwref.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for(DataSnapshot keywordSnapshot : dataSnapshot.getChildren()){
+                    String Key = keywordSnapshot.getKey();
+                    Keyword get = keywordSnapshot.getValue(Keyword.class);
+                    if(userID.equals(get.userID)){
+                        keywords[0] = get.kw1;
+                        keywords[1] = get.kw2;
+                        keywords[2] = get.kw3;
+                    }
+                }
+
+                DatabaseReference database = FirebaseDatabase.getInstance().getReference("posts");
+                database.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        if (listViewAdapter.getCount() > 0) {
+                            return;
+                        }
+
+                        HashMap<String, HashMap> posts = (HashMap)dataSnapshot.getValue();
+                        for (Map.Entry<String, HashMap> entry : posts.entrySet()) {
+                            HashMap post = entry.getValue();
+                            Double score = 0.0;
+                            Integer donatedNum = Integer.parseInt(post.get("donated_num").toString());
+                            Integer goalNum = Integer.parseInt(post.get("goal_num").toString());
+                            String story = post.get("content").toString();
+
+                            for(int i=0; i< 3; i++){
+                                if(story.contains(keywords[i])){
+                                    score += 25.0;
+                                }
+                            }
+
+
+
+                            score += 25.0 * (double)donatedNum / goalNum;
+
+                            listViewAdapter.addItem(post, score);
+                        }
+                        listViewAdapter.sortList();
+
+                        listView.setAdapter(listViewAdapter);
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+
+        });
+
+
+
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("posts");
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (listViewAdapter.getCount() > 0) {
+                    return;
+                }
+
+                HashMap<String, HashMap> posts = (HashMap)dataSnapshot.getValue();
+                for (Map.Entry<String, HashMap> entry : posts.entrySet()) {
+                    HashMap post = entry.getValue();
+                    Double score = 0.0;
+                    Integer donatedNum = Integer.parseInt(post.get("donated_num").toString());
+                    Integer goalNum = Integer.parseInt(post.get("goal_num").toString());
+                    String story = post.get("content").toString();
+
+                    for(int i=0; i< 3; i++){
+                        if(story.contains(keywords[i])){
+                            score += 25.0;
+                        }
+                    }
+
+
+
+                    score += 25.0 * (double)donatedNum / goalNum;
+
+                    listViewAdapter.addItem(post, score);
+                }
+                listViewAdapter.sortList();
+
+                listView.setAdapter(listViewAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
 
 
 
 
-
     }
-
-
 
 
 
@@ -115,118 +195,4 @@ public class StoryListActivity extends AppCompatActivity {
     }
 
 
-
-    public void get_postList(){
-        postLists.clear();
-        for(int i=0; i<posts.size(); i++){
-            Double score = 0.0;
-            Double percent = 0.0;
-            Post p = posts.get(i);
-
-            for (int j=0; j< 3; j++){
-                if (p.story.contains(keyword.get(j))){
-                    score += 25.0;
-                }
-            }
-            percent = (double)p.donatedNum / (double)p.targetNum;
-            score += 25.0 * percent;
-
-            ScoredPostList sp = new ScoredPostList(p, score, percent);
-            postLists.add(sp);
-        }
-    }
-
-
-
-
-
-
-    private class KwTask extends AsyncTask<String, Integer, Boolean> {
-        @Override
-        protected Boolean doInBackground(String... strings) {
-            final String userID = strings[0];
-            final ValueEventListener keywordListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    keyword.clear();
-                    for(DataSnapshot keywordSnapshot : dataSnapshot.getChildren()){
-                        String Key = keywordSnapshot.getKey();
-                        Keyword get = keywordSnapshot.getValue(Keyword.class);
-                        if(userID.equals(get.userID)){
-                            keyword.add(get.kw1);
-                            keyword.add(get.kw2);
-                            keyword.add(get.kw3);
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            };
-            myKeywordRef.child("Keyword").addValueEventListener(keywordListener);
-            return true;
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values){
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected void onPostExecute(Boolean s) {
-            super.onPostExecute(s);
-        }
-
-    }
-
-    private class PostTask extends AsyncTask<Void, Integer, Boolean>{
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-        }
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... voids) {
-            posts.clear();
-
-            final ValueEventListener postListener = new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
-                        String key = postSnapshot.getKey();
-                        Post get = postSnapshot.getValue(Post.class);
-
-                        int tN = 0, dn = 0;
-                        tN = get.targetNum;
-                        dn = get.donatedNum;
-
-                        if(tN != dn){
-                            posts.add(get);
-                        }
-
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                }
-            };
-            myPostRef.child("Post").addValueEventListener(postListener);
-            return true;
-        }
-    }
-
-
-
-
 }
-

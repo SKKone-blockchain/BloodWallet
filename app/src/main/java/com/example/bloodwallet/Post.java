@@ -36,11 +36,11 @@ public class Post {
         HashMap<String, Object> result = new HashMap<>();
         result.put("postID", postID);
         result.put("title", title);
-        result.put("story", story);
-        result.put("writer", writer);
-        result.put("donatedNum", donatedNum);
-        result.put("targetNum", targetNum);
-        result.put("summary", summary);
+        result.put("content", story);
+        result.put("user_id", writer);
+        result.put("donated_num", donatedNum);
+        result.put("goal_num", targetNum);
+        result.put("abstract", summary);
         return result;
     }
 }

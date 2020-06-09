@@ -30,15 +30,15 @@
             android:textStyle="bold" />
 
         <TextView
-            android:layout_marginRight="20dp"
-            android:background="#FBE6E6"
+            android:id="@+id/name_myinfo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
             android:layout_weight="3"
-            android:text="홍길동"
+            android:background="#FBE6E6"
             android:gravity="center_vertical|right"
-            android:textStyle="bold"
-            android:paddingRight="20dp"/>
+            android:paddingRight="20dp"
+            android:textStyle="bold" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -57,27 +57,29 @@
             android:text="성별"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textStyle="bold" />
+
         <TextView
-            android:layout_marginRight="20dp"
-            android:background="#FBE6E6"
+            android:id="@+id/sex_myinfo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
             android:layout_weight="3"
-            android:text="남자"
+            android:background="#FBE6E6"
             android:gravity="center_vertical|right"
-            android:textStyle="bold"
-            android:paddingRight="20dp"/>
+            android:paddingRight="20dp"
+            android:textStyle="bold" />
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="0.1"
-        android:orientation="horizontal">
+        android:layout_marginHorizontal="20dp"
+        android:orientation="horizontal"
+        android:background="#FBE6E6">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginLeft="20dp"
             android:layout_weight="3"
             android:background="#FBE6E6"
             android:gravity="center_vertical"
@@ -86,27 +88,39 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/spinner1"
+        <EditText
+            android:id="@+id/myinfo_keyword1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
+            android:layout_marginVertical="10dp"
+            android:layout_weight="3"
+            android:clickable="true"
+            android:gravity="center_vertical|right"
+            android:paddingRight="5dp"
+            android:background="@drawable/border"/>
+        <EditText
+            android:id="@+id/myinfo_keyword2"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
+            android:layout_marginVertical="10dp"
+            android:layout_weight="3"
+            android:gravity="center_vertical|right"
+            android:paddingRight="5dp"
+            android:clickable="true"
+            android:background="@drawable/border"/>
+        <EditText
+            android:id="@+id/myinfo_keyword3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginRight="20dp"
             android:layout_weight="3"
-            android:gravity="center_vertical|right" />
-        <Spinner
-            android:id="@+id/spinner1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="20dp"
-            android:layout_weight="3"
-            android:gravity="center_vertical|right" />
-        <Spinner
-            android:id="@+id/spinner1"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="20dp"
-            android:layout_weight="3"
-            android:gravity="center_vertical|right" />
+            android:paddingRight="5dp"
+            android:layout_marginVertical="10dp"
+            android:gravity="center_vertical|right"
+            android:clickable="true"
+            android:background="@drawable/border"/>
     </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
@@ -125,17 +139,17 @@
             android:text="나이(만)"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:textStyle="bold" />
+
         <TextView
-            android:layout_marginRight="20dp"
-            android:paddingRight="20dp"
-            android:background="#FBE6E6"
+            android:id="@+id/age_myinfo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
+            android:layout_marginRight="20dp"
             android:layout_weight="3"
-            android:text="24세"
+            android:background="#FBE6E6"
             android:gravity="center_vertical|right"
-            android:textStyle="bold"
-            />
+            android:paddingRight="20dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
     <LinearLayout
@@ -197,13 +211,52 @@
         android:layout_weight="0.4"
         android:background="#FBE6E6" />
 
+    <Button
+        android:id="@+id/myinfo_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="100dp"
+        android:layout_marginTop="5dp"
+        android:text="저장" />
+
     <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.02"/>
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="75dp"
-            android:background="@drawable/frame7"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:orientation="horizontal"
+        android:background="@color/colorPrimary">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="match_parent"
+            android:text="Blood Wallet"
+            android:textColor="#FFFFFF"
+            android:textSize="23sp"
+            android:textStyle="bold"
+            android:gravity="center"/>
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:gravity="bottom|right"
+            android:paddingBottom="5dp"
+            android:paddingRight="0dp"/>
+
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.5"
+            android:background="#F78C8C" />
+    </LinearLayout>
 
 </LinearLayout>

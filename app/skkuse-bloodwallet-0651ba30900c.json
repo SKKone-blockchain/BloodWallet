@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "skkuse-bloodwallet",
+  "private_key_id": "0651ba30900c4104c1201d88950ddafe0ad14572",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQDYX77xIB0/cij1\nY3cUbnQNz5pWXUVUzMRht+EputCYb3j8Bky70+iO5YtuFPX2qLXEkyENI1xNuZdB\nOZALhT+xY5CJNNvFbJEnIpywkiw9NBUlottjUJe37DsCSE4TU5prR4eDtXh+a2Un\nBo5URpLzqYGCJLw8KzQwwdbG6kAqmtqPmv7scYD4BQq7MmGi3W71cwEskSVQrXi2\njXwaMmkP3PsvaGlg2nIX66SzN87jpJMThmcEgfXzmapwFkTMdu7PyP+1vuHiEz2e\nejsadkatmTBNQiQk/vVQgDDgGMAEjOnM5NAWA6gz78WTK6AAHhGikDtY9TDpQt01\nzd41Aui9AgMBAAECggEABkq8ePML3q8xaTdX/GBc4BTwIkBKlpVwxX2tHsNHsxMU\nw9FkFFcsbVFX/V6/K0nLJVj47lKfqcPylcs4eNlKWZxxVMgUdvh5/RcY0tqhTjNQ\nRRyoAAqVKtxD+ARFvvKgrCtzkZ0qkJSLZ7fdVi6KMes1MKVkUuSXuy470mN387Uo\n4jUp1NHQpF8TxRvnPis415rQ94GwSXavMUjFvURQw/8T+/OWoAAdfSTAYjBES98I\nvpk8XDyN68sRtksQetJfBv1xOLJFtP5V9TiXpJfiCMCsDgDP2K3oFSzVy96YOnB5\nF4TWo5FG3OOVkf+CGiRCJ8Ji/h3od9g0N6VJbQxkCQKBgQDxNXLjJ944tNY4GZKw\n0GWTWUnc9tjkTOPFnszxxe2YwKfGuJTKBJ8sPdATvbxYTDh0ntzgaWXWdBAFSPK0\nIKSouC0R+hhPPdLL4IjEE1juniZdGijccNpjOQJva+3GScnpgJfqHsOrDlRTZAHH\n3o5FoiqJXXxQ32C+q1ZFebCGeQKBgQDlpG9djvU213RAqAxiQ0bcAK+HgPUZiOm/\n/iIgzrQaHZgB6x0GE9Qs/+xHQNJGt8BlTBBCrAwEDFExLVkgUbSsmtqZUkT2E9dF\nK5VmWIyEzsY8hkz74Bof95lMFrjh4Z+RPdXtd6XA4KK9Kb8BLrYTIIe20Vbgz4b3\nxfD87kHzZQKBgCJxLVx+Pt7+A3CzRhz1ROvLXh6tKL9As21uhXkoeArNx6c6iBRo\noInisal/+Drrd0w/uu5YXnBG1lrK1c0etCRbWCQu//WgsE7oWt8UnChGcNfuelMv\n0h9E7rIWSTd9JdWvxQFrLylnvGbD6vUtNEeBJm3C6ZNqshfHw2PcQnaRAoGADni4\nU+sIZPZa6yAr951Jv9+DMETeLUfFg0XenLap/uNSivxoDdP+EP/nwe3B0pcN1tRe\nSfVRpIeqLjEvZqv/eMkhcXwPwHornL5MYfC+mjf1oibMfyr2OoF99Z+Q8xsm1R5S\ndu6NUYRWfRk+YjKxYq8wHkM++Ffbp42fzDCvk0kCgYBCHorrpQVnZj9u44N3SR6O\nrKEt8cyhL7A0LeKT295KTsZUMT7hxks/H6j5THkF4++6sJbH2QM2Pp7EiBpAXsri\nSPby7fpoPPKeA84oDOyP6JGcqvYy7DsQatrKspL0EFOm8ka64RCzYJkCX9iQ5r0B\nbn10jyIauB7JH2ZfLLe79g==\n-----END PRIVATE KEY-----\n",
+  "client_email": "skkuse-bloodwallet@skkuse-bloodwallet.iam.gserviceaccount.com",
+  "client_id": "106235177076777217717",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/skkuse-bloodwallet%40skkuse-bloodwallet.iam.gserviceaccount.com"
+}

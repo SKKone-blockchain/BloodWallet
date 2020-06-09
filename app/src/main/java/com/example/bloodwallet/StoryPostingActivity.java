@@ -2,6 +2,7 @@ package com.example.bloodwallet;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,9 +19,14 @@ import com.google.cloud.language.v1.Document.Type;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
 
+import java.io.IOException;
 import java.security.Key;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class StoryPostingActivity extends AppCompatActivity {
     private EditText et_title, et_story, et_targetNum;
@@ -37,12 +43,19 @@ public class StoryPostingActivity extends AppCompatActivity {
     Integer donatedNum;
     Integer targetNum;
     String summary;
+    String tarNumString;
+    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_posting);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Intent intent = getIntent();
+
+        userID=intent.getStringExtra("userID");
+        userID = "nlpTest";
 
         et_title = findViewById(R.id.story_posting_title);
         et_story = findViewById(R.id.story_posting_content);
@@ -52,35 +65,65 @@ public class StoryPostingActivity extends AppCompatActivity {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                long now = System.currentTimeMillis();
-                SimpleDateFormat sdfNow = new SimpleDateFormat("yyyy/mm/dd hh:mm:ss");
-                Date date = new Date(now);
-                String timestamp = sdfNow.format(date);
-                timestamp = timestamp.replaceAll("/", "");
-                timestamp = timestamp.replaceAll(" ", "");
-                timestamp = timestamp.replaceAll(":", "");
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                Date date = new Date();
+                String timestamp = formatter.format(date);
+
 
                 title = et_title.getText().toString();
                 story = et_story.getText().toString();
-                writer = "김진범";
+                writer = userID;
                 postID = writer + timestamp;
-                //donatedNum = 0;
-                donatedNum = 1;
-                targetNum = Integer.parseInt(et_targetNum.getText().toString());
-                summary = "dddd";
+                donatedNum = 0;
+                tarNumString = et_targetNum.getText().toString();
+                targetNum = Integer.parseInt(tarNumString);
 
-                story = "제 동생이 얼마전에 백혈병을 진단받아 골수이식을 진행하였습니다. 골수이식 직후, 혈액수치가 급격히 떨여져 긴급수혈을 93차례 받았습니다. 그러다보니 수혈 비용이 만만치 않게 나와 여러분께 도움을 청합니다.";
-                try {
-                    getNLP();
-                } catch (Exception e) {
-                    Log.d("nlp", " not working");
+
+                if (title.length() <= 0) {
+                    Toast.makeText(StoryPostingActivity.this, "제목을 입력해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (story.length() <= 0) {
+                    Toast.makeText(StoryPostingActivity.this, "본문을 입력해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                } else if (tarNumString.length() <= 0) {
+                    Toast.makeText(StoryPostingActivity.this, "목표 갯수를 입력해주세요", Toast.LENGTH_SHORT).show();
+                    return;
+                } else{
+                    story = "제 동생이 얼마전에 백혈병을 진단받아 골수이식을 진행하였습니다. 골수이식 직후, 혈액수치가 급격히 떨여져 긴급수혈을 93차례 받았습니다. 그러다보니 수혈 비용이 만만치 않게 나와 여러분께 도움을 청합니다.";
+
+
+                    String[] sentences = story.split("\\.");
+                    float worst_score = 10;
+                    String worst_sentence = sentences[0];
+                    for(int i=0; i< sentences.length; i++){
+                        try(LanguageServiceClient language = LanguageServiceClient.create()){
+                            Document doc = Document.newBuilder().setContent(sentences[i]).setType(Type.PLAIN_TEXT).build();
+
+                            // Detects the sentiment of the text
+                            Sentiment sentiment = language.analyzeSentiment(doc).getDocumentSentiment();
+
+                            float score = sentiment.getScore();
+
+                            if(worst_score > score){
+                                worst_sentence = sentences[i];
+                                worst_score = score;
+                            }
+                        }
+                        catch (Exception e){
+                            e.printStackTrace(); //오류 출력(방법은 여러가지)
+                            try {
+                                throw e;
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
+                            }
+                        }
+                    }
+                    summary = worst_sentence;
+
+
+                    postFirebase();
+                    onBackPressed();
                 }
-
-
-
-
-                postFirebase();
-                onBackPressed();
             }
         });
 
@@ -89,34 +132,9 @@ public class StoryPostingActivity extends AppCompatActivity {
     // firebase에 업로드
     public void postFirebase(){
         Post post = new Post(postID, title, story, writer, donatedNum, targetNum, summary);
-        myRef.child("Post").child(postID).setValue(post);
+        myRef.child("posts").child(postID).setValue(post);
     }
 
-    //nlp로 summary 추출
-    public void getNLP() throws Exception{
-        String[] sentences = story.split(".");
-        Double worst = 10.0;
-        Log.d("getNLP ", sentences[0]);
-        try(LanguageServiceClient language = LanguageServiceClient.create()){
-            for(int i=0; i< sentences.length; i++){
-                String text = sentences[i];
-                Document doc = Document.newBuilder().setContent(text).setType(Type.PLAIN_TEXT).build();
-
-                // Detects the sentiment of the text
-                Sentiment sentiment = language.analyzeSentiment(doc).getDocumentSentiment();
-
-                float score = sentiment.getScore();
-                Log.d(text, " : " + String.valueOf(score));
-
-                if(worst > score){
-                    summary = text;
-                }
-            }
-        }
-        catch (Exception e){
-            Log.d("LaunguageSErviceClient ", "not workding");
-        }
-    }
 
 
 

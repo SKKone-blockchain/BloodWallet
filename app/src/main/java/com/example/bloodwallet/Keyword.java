@@ -25,7 +25,7 @@ public class Keyword {
     @Exclude
     public Map<String, Object> toMap(){
         HashMap<String, Object> result = new HashMap<>();
-        result.put("userID", userID);
+        result.put("user_id", userID);
         result.put("kw1", kw1);
         result.put("kw2", kw2);
         result.put("kw3", kw3);
