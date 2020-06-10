@@ -350,24 +350,27 @@ public class Donation extends AppCompatActivity implements WithProgressView {
         current_num_smart_contract_call += 1;
 
         if (resp == null || resp.getError() != null) {
-            result_line = resp == null ? "Fee Payer에 연결에 실패하였습니다.\n\n"
+            result_line += resp == null ? "Fee Payer에 연결에 실패하였습니다.\n\n"
                     : "기부에 실패하였습니다.: " + resp.getError() +"\n\n";
-            AlertDialog.Builder builder = new AlertDialog.Builder(Donation.this);
-            builder.setTitle("\n헌혈증서 기부 결과")
-                    .setMessage(String.valueOf(success) + "개의 헌혈증 기부 성공!\n\n" + result_line)
-                    .setCancelable(false)// 뒤로버튼으로 취소금지
-                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
 
-                        public void onClick(DialogInterface dialog, int whichButton) {
+            if(current_num_smart_contract_call == num_smart_contract_call) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(Donation.this);
+                builder.setTitle("\n헌혈증서 기부 결과")
+                        .setMessage(result_line)
+                        .setCancelable(false)// 뒤로버튼으로 취소금지
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
 
-                            dialog.cancel();
-                            Intent intent = new Intent(Donation.this, MainInfo.class);
-                            startActivity(intent);
-                        }
-                    });
-            AlertDialog dialog2 = builder.create();
-            dialog2.show();
-            flag = true;
+                            public void onClick(DialogInterface dialog, int whichButton) {
+
+                                dialog.cancel();
+                                Intent intent = new Intent(Donation.this, MainInfo.class);
+                                startActivity(intent);
+                            }
+                        });
+                AlertDialog dialog2 = builder.create();
+                dialog2.show();
+                flag = true;
+            }
         }
         else {
             success ++;
@@ -390,7 +393,7 @@ public class Donation extends AppCompatActivity implements WithProgressView {
                             public void onClick(DialogInterface dialog, int whichButton) {
 
                                 dialog.cancel();
-                                Intent intent = new Intent(Donation.this, MainInfo.class);
+                                Intent intent = new Intent(Donation.this, StoryListActivity.class);
                                 startActivity(intent);
                             }
                         });
