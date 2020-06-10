@@ -1,6 +1,7 @@
 package com.example.bloodwallet;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.klaytn.caver.crypto.KlayCredentials;
 
+import java.net.Inet4Address;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
@@ -37,6 +39,7 @@ public class MyDonationsReceivedList extends AppCompatActivity {
     ArrayList<String> time = new ArrayList<>(); //{"10:56 PM","2:00 PM","11:03 AM"};
     ArrayList<String> story = new ArrayList<>(); //{"aaaa","bbbb","cccc"};
     ArrayList<String> percent = new ArrayList<>(); //{"100%","100%","50%"};
+    ArrayList<Integer> num_percent = new ArrayList<>();
     myadapter adapter;
     String userID;
     private BloodWallet mContract;
@@ -51,6 +54,8 @@ public class MyDonationsReceivedList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_donations_received_list);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // TODO: user id intent 다시 정리하기
         Intent intent = getIntent();
         userID = intent.getStringExtra("userID");
         System.out.println("User id via intent :" + userID);
@@ -62,16 +67,17 @@ public class MyDonationsReceivedList extends AppCompatActivity {
         // SharedPreferences pref = getSharedPreferences("KEY", MODE_PRIVATE);
         // TODO: private key load 해서 사용하기
         // TODO: User의 Public key를 가져오기
-        private_key = "0x63e98ad7ee907dc08f2f3934808d256ff1dcc417579a1ccce577f67e341da43b"; //pref.getString("PRIVATE_KEY", null);
+        SharedPreferences pref = getSharedPreferences("KEY", MODE_PRIVATE);
+        private_key = pref.getString("PRIVATE_KEY", "0x63e98ad7ee907dc08f2f3934808d256ff1dcc417579a1ccce577f67e341da43b");
         System.out.println("Private Key: " + private_key);
         assert private_key != null;
 
-        address = "0x5039d770becfa6ae56df428f4a3f413560b15678"; //pref.getString("PUBLIC_KEY", null);
+        address = pref.getString("PUBLIC_KEY", "0x5039d770becfa6ae56df428f4a3f413560b15678");
         System.out.println("Public Key: " + address);
         assert address != null;
 
-        // TODO: user id intent 다시 정리하기
-        userID = "sk";
+
+
 
 
         ImageButton myinfobutton = findViewById(R.id.myinfobutton_list);
@@ -134,6 +140,7 @@ public class MyDonationsReceivedList extends AppCompatActivity {
                     double donated = post_list.get(i).donated_num;
                     double goal = post_list.get(i).target_num;
                     System.out.println("Percent " + donated / goal * 100.0f);
+                    num_percent.add((int)Math.round(donated / goal * 100));
                     percent.add(String.format("%.1f", donated/goal  * 100.0f) + "%");
                     time.add(post_list.get(i).timestamp.split("-")[1] + "월" +  post_list.get(i).timestamp.split("-")[2] + "일");
 
@@ -212,7 +219,7 @@ public class MyDonationsReceivedList extends AppCompatActivity {
             view.setTime(time.get(position));
             view.setStory(story.get(position));
             view.percent(percent.get(position));
-            // TODO: view.setPercent();
+            view.setPercent(num_percent.get(position));
 
             return view;
         }

@@ -393,7 +393,7 @@ public class Donation extends AppCompatActivity implements WithProgressView {
                             public void onClick(DialogInterface dialog, int whichButton) {
 
                                 dialog.cancel();
-                                Intent intent = new Intent(Donation.this, StoryListActivity.class);
+                                Intent intent = new Intent(Donation.this, MainInfo.class);
                                 startActivity(intent);
                             }
                         });
