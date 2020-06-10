@@ -35,8 +35,7 @@ public class StoryListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_story_list);
         Intent intent = getIntent();
 
-        //userID=intent.getStringExtra("userID");
-        userID = "김진범";
+        userID=intent.getStringExtra("userID");
         ImageButton f = findViewById(R.id.myinfobutton_list);
         f.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
