@@ -89,9 +89,6 @@ public class StoryPostingActivity extends AppCompatActivity {
                     Toast.makeText(StoryPostingActivity.this, "목표 갯수를 입력해주세요", Toast.LENGTH_SHORT).show();
                     return;
                 } else{
-                    story = "제 동생이 얼마전에 백혈병을 진단받아 골수이식을 진행하였습니다. 골수이식 직후, 혈액수치가 급격히 떨여져 긴급수혈을 93차례 받았습니다. 그러다보니 수혈 비용이 만만치 않게 나와 여러분께 도움을 청합니다.";
-
-
                     String[] sentences = story.split("\\.");
                     float worst_score = 10;
                     String worst_sentence = sentences[0];
