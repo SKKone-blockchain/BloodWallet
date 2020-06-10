@@ -13,13 +13,14 @@ public class Post {
     public Integer donatedNum;
     public Integer targetNum;
     public String summary;
+    public String timestamp;
 //    public ArrayList<Comment> comments;
 
     public Post(){
 
     }
 
-    public Post(String postID, String title, String story, String writer, Integer donatedNum, Integer targetNum, String summary){
+    public Post(String postID, String title, String story, String writer, Integer donatedNum, Integer targetNum, String summary, String timestamp){
         this.postID = postID;
         this.title = title;
         this.story = story;
@@ -27,6 +28,7 @@ public class Post {
         this.donatedNum = donatedNum;
         this.targetNum = targetNum;
         this.summary = summary;
+        this.timestamp = timestamp;
     }
 
 
@@ -41,6 +43,10 @@ public class Post {
         result.put("donated_num", donatedNum);
         result.put("goal_num", targetNum);
         result.put("abstract", summary);
+        result.put("timestamp", timestamp);
         return result;
     }
+
+
+
 }
