@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.bloodwallet.task.onGetDataListener;
 import com.example.bloodwallet.ui.Currentuserinfo;
 import com.example.bloodwallet.ui.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -43,6 +44,12 @@ public class Login extends AppCompatActivity {
     EditText PW;
     Button loginbutton_login;
     HashMap<String, User> user_map = new HashMap<>();
+
+    boolean isCheck = false;
+    String userID;
+    String userName;
+    String userBirthDate;
+
 //    {"park": user_instancee, "sungyoun":user_instance}
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +66,39 @@ public class Login extends AppCompatActivity {
         if(firebaseAuth.getCurrentUser() != null) {
             String email = firebaseAuth.getCurrentUser().getEmail();
             ID.setText(email);
-            loadUserID(email);
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
+            loadUserID(userRef, email, new onGetDataListener() {
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+
+                    if (isCheck) {
+                        Toast.makeText(Login.this, userID + "님 환영합니다.", Toast.LENGTH_LONG).show();
+
+                        Intent intent = new Intent(Login.this, MainInfo.class);
+                        intent.putExtra("userID", userID);
+                        intent.putExtra("userName", userName);
+                        intent.putExtra("userBirthDate", userBirthDate);
+                        getFirebaseDatabase();
+                        finish();
+
+                        startActivity(intent);
+                    }
+                    isCheck = false;
+                }
+
+                @Override
+                public void onStart() {
+
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+            });
+
+
+            // TODO: Intent
         }
 
         loginbutton_login.setOnClickListener(new View.OnClickListener() {
@@ -78,38 +117,36 @@ public class Login extends AppCompatActivity {
         getFirebaseDatabase();
     }
 
-    private void loadUserID(String userEmail) {
-        DatabaseReference database = FirebaseDatabase.getInstance().getReference("users");
-        database.addValueEventListener(new ValueEventListener() {
+
+    private void loadUserID(DatabaseReference userRef, String userEmail, final onGetDataListener listener) {
+
+        isCheck = true;
+        listener.onStart();
+
+        userRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                HashMap<String, HashMap> userInfo = (HashMap)dataSnapshot.getValue();
-                for (Map.Entry<String, HashMap> entry : userInfo.entrySet()) {
-                    HashMap userMap = entry.getValue();
-                    if (userMap.get("email") == null) {
-                        continue;
-                    }
-                    String email = userMap.get("email").toString();
-                    if (email.equals(userEmail)) {
-                        String userID = userMap.get("id").toString();
-                        String userName = userMap.get("name").toString();
-                        String userBirthDate = userMap.get("birthdate").toString();
-                        Toast.makeText(Login.this, userID+"님 환영합니다." , Toast.LENGTH_LONG).show();
 
-                        Intent intent = new Intent(Login.this, MainInfo.class);
-                        intent.putExtra("userID", userID);
-                        intent.putExtra("userName", userName);
-                        intent.putExtra("userBirthDate", userBirthDate);
-                        getFirebaseDatabase();
-                        finish();
-                        startActivity(intent);
+                    HashMap<String, HashMap> userInfo = (HashMap) dataSnapshot.getValue();
+                    for (Map.Entry<String, HashMap> entry : userInfo.entrySet()) {
+                        HashMap userMap = entry.getValue();
+                        if (userMap.get("email") == null) {
+                            continue;
+                        }
+                        String email = userMap.get("email").toString();
+                        if (email.equals(userEmail)) {
+                            userID = userMap.get("id").toString();
+                            userName = userMap.get("name").toString();
+                            userBirthDate = userMap.get("birthdate").toString();
+                        }
                     }
-                }
+
+                listener.onSuccess(dataSnapshot);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
-
+                listener.onFailure();
             }
         });
     }
@@ -153,7 +190,37 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            loadUserID(email);
+
+                            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
+                            loadUserID(userRef, email, new onGetDataListener() {
+                                @Override
+                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                    if (isCheck) {
+                                        Toast.makeText(Login.this, userID + "님 환영합니다.", Toast.LENGTH_LONG).show();
+
+                                        Intent intent = new Intent(Login.this, MainInfo.class);
+                                        intent.putExtra("userID", userID);
+                                        intent.putExtra("userName", userName);
+                                        intent.putExtra("userBirthDate", userBirthDate);
+                                        getFirebaseDatabase();
+                                        finish();
+
+                                        startActivity(intent);
+                                    }
+                                    isCheck = false;
+                                }
+
+                                @Override
+                                public void onStart() {
+
+                                }
+
+                                @Override
+                                public void onFailure() {
+
+                                }
+                            });
+
                         } else {
                             Log.w("Login", "signInWithEmail:failure", task.getException());
                             Toast.makeText(Login.this, "이메일 또는 비밀번호가 틀렸습니다", Toast.LENGTH_LONG).show();
