@@ -8,12 +8,15 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
+
 public class DonationsRecievedListReading extends LinearLayout {
 
     TextView RecievedtitleView;
     TextView RecievedtimeView;
     TextView RecievedstoryView;
     TextView RecievedpercentView;
+    CircularProgressBar ProgressBar;
 
     public DonationsRecievedListReading(Context context) {
         super(context);
@@ -22,6 +25,7 @@ public class DonationsRecievedListReading extends LinearLayout {
         RecievedtimeView=(TextView)findViewById(R.id.time_recievedreading);
         RecievedstoryView= (TextView)findViewById(R.id.stoty_recievedreading);
         RecievedpercentView= (TextView)findViewById(R.id.percent_recievedreading);
+        ProgressBar = findViewById(R.id.progress_receivedreading);
     }
     private void inflation_init(Context context){
         LayoutInflater inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -39,5 +43,5 @@ public class DonationsRecievedListReading extends LinearLayout {
     public void percent(String percent){
         RecievedpercentView.setText(percent);
     }
-
+    public void setPercent(int percent) { ProgressBar.setProgress(percent); }
 }

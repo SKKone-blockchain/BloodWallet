@@ -53,11 +53,19 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
 
     Set<Map.Entry<String, HashMap>> certificates;
 
+    String userID;
+    String userName;
+    String userBirthDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_blood_certification_register);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        userID = getIntent().getStringExtra("userID");
+        userName = getIntent().getStringExtra("userName");
+        userBirthDate = getIntent().getStringExtra("userBirthDate");
 
         spinner = (Spinner) findViewById(R.id.blood_certificate_donation_type);
         final String[] bloodTypeArray = { "전혈 320ml", "전혈 400ml", "혈장 500ml", "혈소판 250ml", "혈소판혈장 250ml + 300ml" };
@@ -73,9 +81,9 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
                 DatePickerDialog dialog = new DatePickerDialog(v.getContext());
                 String text = birthDateTextView.getText().toString();
                 if (text.length() > 0) {
-                    int year = Integer.parseInt(text.split("\\.")[0]);
-                    int month = Integer.parseInt(text.split("\\.")[1]) - 1;
-                    int day = Integer.parseInt(text.split("\\.")[2]);
+                    int year = Integer.parseInt(text.substring(0, 4));
+                    int month = Integer.parseInt(text.substring(4, 6));
+                    int day = Integer.parseInt(text.substring(6, 8));
                     dialog.updateDate(year, month, day);
                 }
                 dialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
@@ -100,9 +108,9 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
                 DatePickerDialog dialog = new DatePickerDialog(v.getContext());
                 String text = donationDateTextView.getText().toString();
                 if (text.length() > 0) {
-                    int year = Integer.parseInt(text.split("\\.")[0]);
-                    int month = Integer.parseInt(text.split("\\.")[1]) - 1;
-                    int day = Integer.parseInt(text.split("\\.")[2]);
+                    int year = Integer.parseInt(text.substring(0, 4));
+                    int month = Integer.parseInt(text.substring(4, 6));
+                    int day = Integer.parseInt(text.substring(6, 8));
                     dialog.updateDate(year, month, day);
                 }
                 dialog.setOnDateSetListener(new DatePickerDialog.OnDateSetListener() {
@@ -170,9 +178,9 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
                 for (Map.Entry<String, HashMap> entry : certificates) {
                     HashMap certificate = entry.getValue();
                     if (certificate.get("agency").equals(source)
-                            && (Long)certificate.get("birthdate") == birthDate
-                            && (Long)certificate.get("code") == Long.parseLong(code)
-                            && (Long)certificate.get("donation_date") == donationDate
+                            && Integer.parseInt(certificate.get("birthdate").toString()) == birthDate
+                            && certificate.get("code").toString().equals(code)
+                            && Integer.parseInt(certificate.get("donation_date").toString()) == donationDate
                             && certificate.get("donation_type").equals(donationType)
                             && certificate.get("name").equals(name)
                             && certificate.get("sex").equals(sex)) {
@@ -192,9 +200,9 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
                 HashMap<String, Object> child = new HashMap<>();
                 HashMap<String, Object> owner = new HashMap<>();
                 owner.put("hospital_code", "");
-                // TODO : 현재 유저의 아이디를 불러와야 함
-                owner.put("owner_id", "temp_user_id");
-                owner.put("user_id", "temp_user_id");
+                String userID = getIntent().getStringExtra("userID");
+                owner.put("owner_id", userID);
+                owner.put("user_id", userID);
                 child.put("owner", owner);
                 database.updateChildren(child);
 
@@ -223,29 +231,32 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
 
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
-            byte[] byteArray = getIntent().getByteArrayExtra("certificate");
-            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-            ImageView certificateView = findViewById(R.id.blood_certificate_image);
-            certificateView.setImageBitmap(bitmap);
-
-            String ocr = extras.getString("ocr");
-            String[] temp = ocr.split("\n");
-            Pattern onlyNumberPattern = Pattern.compile("\\d+");
-            List<String> parsedOcr = new ArrayList<String>();
-            for (String data : temp) {
-                String matched = getOnlyCharacter(data);
-                Matcher m = onlyNumberPattern.matcher(data);
-                if (matched.length() > 0 && m.find()) {
-                    parsedOcr.add(matched);
-                }
-            }
-
             try {
+                byte[] byteArray = getIntent().getByteArrayExtra("certificate");
+                Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                ImageView certificateView = findViewById(R.id.blood_certificate_image);
+                certificateView.setImageBitmap(bitmap);
+
+                String ocr = extras.getString("ocr");
+                String[] temp = ocr.split("\n");
+                Pattern onlyNumberPattern = Pattern.compile("\\d+");
+                List<String> parsedOcr = new ArrayList<String>();
+                for (String data : temp) {
+                    String matched = getOnlyCharacter(data);
+                    Matcher m = onlyNumberPattern.matcher(data);
+                    if (matched.length() > 0 && m.find()) {
+                        parsedOcr.add(matched);
+                    }
+                }
+
                 parseDataAndFillView(parsedOcr);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+        nameEditTextView.setText(userName);
+        birthDateTextView.setText(userBirthDate);
 
         male.callOnClick();
     }
@@ -323,7 +334,7 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
     }
 
     private String getDateString(int year, int month, int day) {
-        return String.format("%04d.%02d.%02d", year, month, day);
+        return String.format("%04d%02d%02d", year, month, day);
     }
 
     private int getDate(String dateString) {

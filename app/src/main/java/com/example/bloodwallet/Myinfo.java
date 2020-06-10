@@ -99,11 +99,11 @@ public class Myinfo extends AppCompatActivity {
                 sex_myinfo.setText(sex);
 
                 String birthDate = userInfo.get("birthdate").toString();
-                int userYear = Integer.parseInt(birthDate.substring(0, 2)) + 1900;
-                SimpleDateFormat formatter = new SimpleDateFormat("yyMMdd");
+                int userYear = Integer.parseInt(birthDate.substring(0, 4));
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
                 Date date = new Date(System.currentTimeMillis());
                 String today = formatter.format(date);
-                int year = Integer.parseInt(today.substring(0, 2)) + 2000;
+                int year = Integer.parseInt(today.substring(0, 4));
                 age_myinfo.setText((year - userYear + 1) + "세");
             }
 

@@ -33,7 +33,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static com.example.bloodwallet.Constants.CHAIN_ID;
-import static com.example.bloodwallet.Constants.CONTRACT_ADDRES;
+import static com.example.bloodwallet.Constants.CONTRACT_ADDRESS;
 import static com.example.bloodwallet.Constants.GAS_PROVIDER;
 
 public class MyDonationList extends AppCompatActivity {
@@ -105,7 +105,7 @@ public class MyDonationList extends AppCompatActivity {
         userID = "sk";
 
         mContract = BloodWallet.load(
-                CONTRACT_ADDRES,
+                CONTRACT_ADDRESS,
                 CaverFactory.get(),
                 KlayCredentials.create(private_key),
                 CHAIN_ID,

@@ -62,7 +62,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static com.example.bloodwallet.Constants.CHAIN_ID;
-import static com.example.bloodwallet.Constants.CONTRACT_ADDRES;
+import static com.example.bloodwallet.Constants.CONTRACT_ADDRESS;
 import static com.example.bloodwallet.Constants.NONCE_BIAS;
 import static com.example.bloodwallet.Constants.PRIVATE_KEY;
 import static com.example.bloodwallet.Constants.SCOPE_BASE_URL;
@@ -95,11 +95,13 @@ public class Donation extends AppCompatActivity implements WithProgressView {
     private ArrayList<String> available_certificates = new ArrayList<>();
 
     // TODO: 넘어와야 하는 것: Writer, Post ID
-    private String writer = "eido";
-    private String post_id = "post1";
+    private String writer;
+    private String post_id;
 
     // TODO: private key sharedPreference로 가져오기
-    private String privateKey = "";
+    private String privateKey;
+
+    TextView patientInfoTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +112,9 @@ public class Donation extends AppCompatActivity implements WithProgressView {
         userID = intent2.getStringExtra("userID");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        post_id = getIntent().getStringExtra("postID");
+        writer = getIntent().getStringExtra("writer");
+
         ImageButton myInfoButton = findViewById(R.id.myinfobutton_donation);
         myInfoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -119,8 +124,10 @@ public class Donation extends AppCompatActivity implements WithProgressView {
             }
         });
 
+        patientInfoTextView = findViewById(R.id.donation_patient_info);
+
         SharedPreferences pref = getSharedPreferences("KEY", MODE_PRIVATE);
-        String privateKey = pref.getString("PRIVATE_KEY", null);
+        privateKey = pref.getString("PRIVATE_KEY", null);
         System.out.println("Private Key: " + privateKey);
         assert privateKey != null;
 
@@ -131,6 +138,34 @@ public class Donation extends AppCompatActivity implements WithProgressView {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 receiver_public_key = dataSnapshot.getValue(String.class);
                 System.out.println("receiver public key " + receiver_public_key);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        DatabaseReference patient_ref = mDatabase.getReference("users/"+ writer);
+        patient_ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                String sex = dataSnapshot.child("sex").getValue(String.class);
+                String birthdate = dataSnapshot.child("birthdate").getValue(String.class);
+                int userYear = Integer.parseInt(birthdate.substring(0, 4));
+
+                // TODO:나이 계산하기
+                sex = (sex.equals("male"))? "남자" : "여자";
+
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+                Date date = new Date(System.currentTimeMillis());
+                String today = formatter.format(date);
+                int year = Integer.parseInt(today.substring(0, 4));
+                int age = (year - userYear + 1);
+
+                String info = "환자 ID : " + writer + "\n환자 정보 : " + String.valueOf(age) + "세, " + sex;
+
+                patientInfoTextView.setText(info);
             }
 
             @Override
@@ -209,7 +244,7 @@ public class Donation extends AppCompatActivity implements WithProgressView {
         mUserCredential = KlayCredentials.create(privateKey);
 
         mContract = BloodWallet.load(
-                CONTRACT_ADDRES,
+                CONTRACT_ADDRESS,
                 CaverFactory.get(),
                 mUserCredential,
                 CHAIN_ID,
@@ -290,7 +325,7 @@ public class Donation extends AppCompatActivity implements WithProgressView {
         ).execute(
                 getPayerService(mPayerURL),
                 Numeric.hexStringToByteArray(FunctionEncoder.encode(function)),
-                CONTRACT_ADDRES
+                CONTRACT_ADDRESS
         );
     }
 

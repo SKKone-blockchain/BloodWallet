@@ -92,10 +92,14 @@ public class Login extends AppCompatActivity {
                     String email = userMap.get("email").toString();
                     if (email.equals(userEmail)) {
                         String userID = userMap.get("id").toString();
+                        String userName = userMap.get("name").toString();
+                        String userBirthDate = userMap.get("birthdate").toString();
                         Toast.makeText(Login.this, userID+"님 환영합니다." , Toast.LENGTH_LONG).show();
 
                         Intent intent = new Intent(Login.this, MainInfo.class);
                         intent.putExtra("userID", userID);
+                        intent.putExtra("userName", userName);
+                        intent.putExtra("userBirthDate", userBirthDate);
                         getFirebaseDatabase();
                         finish();
                         startActivity(intent);

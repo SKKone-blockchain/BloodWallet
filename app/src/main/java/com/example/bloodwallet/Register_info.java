@@ -158,8 +158,8 @@ public class Register_info extends AppCompatActivity {
         } else if (password.length() < 6) {
             Toast.makeText(getApplicationContext(), "6자리 이상의 비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
-        } else if (birthdate.getText().length() != 6) {
-            Toast.makeText(this, "생일을 yyMMdd 형태로 입력해주세요", Toast.LENGTH_SHORT).show();
+        } else if (birthdate.getText().length() != 8) {
+            Toast.makeText(this, "생일을 yyyyMMdd 형태로 입력해주세요", Toast.LENGTH_SHORT).show();
             return;
         } else if (sex.length() <= 0) {
             Toast.makeText(this, "성별을 선택해주세요", Toast.LENGTH_SHORT).show();

@@ -1,6 +1,8 @@
 package com.example.bloodwallet;
 
 public class StoryListItem implements Comparable<StoryListItem> {
+    public String postID;
+    public String writer;
     public String title;
     public String content;
     public String summary;
@@ -29,9 +31,9 @@ public class StoryListItem implements Comparable<StoryListItem> {
         return String.valueOf(score);
     }
 
-    public String getPercent() {
+    public int getPercent() {
         double percent = (double) donatedNum / goalNum * 100;
-        return (int)percent + "%";
+        return (int)percent;
     }
 
     @Override

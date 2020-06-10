@@ -86,7 +86,7 @@
         android:layout_weight="0.05"
         android:background="@drawable/border"
         android:ems="10"
-        android:hint="생년월일 yyMMdd"
+        android:hint="생년월일 yyyyMMdd"
         android:inputType="textPersonName"
         android:paddingLeft="10dp" />
 

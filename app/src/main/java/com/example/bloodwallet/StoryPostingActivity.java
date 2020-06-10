@@ -3,6 +3,7 @@ package com.example.bloodwallet;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -56,7 +57,6 @@ public class StoryPostingActivity extends AppCompatActivity {
         Intent intent = getIntent();
 
         userID=intent.getStringExtra("userID");
-        userID = "nlpTest";
 
         et_title = findViewById(R.id.story_posting_title);
         et_story = findViewById(R.id.story_posting_content);
@@ -70,7 +70,6 @@ public class StoryPostingActivity extends AppCompatActivity {
                 Date date = new Date();
                 timestamp = formatter.format(date);
 
-
                 title = et_title.getText().toString();
                 story = et_story.getText().toString();
                 writer = userID;
@@ -78,7 +77,6 @@ public class StoryPostingActivity extends AppCompatActivity {
                 donatedNum = 0;
                 tarNumString = et_targetNum.getText().toString();
                 targetNum = Integer.parseInt(tarNumString);
-
 
                 if (title.length() <= 0) {
                     Toast.makeText(StoryPostingActivity.this, "제목을 입력해주세요", Toast.LENGTH_SHORT).show();
@@ -118,7 +116,6 @@ public class StoryPostingActivity extends AppCompatActivity {
                     }
                     summary = worst_sentence;
 
-
                     postFirebase();
                     onBackPressed();
                 }
@@ -128,8 +125,11 @@ public class StoryPostingActivity extends AppCompatActivity {
     }
 
     // firebase에 업로드
-    public void postFirebase(){
-        Post post = new Post(postID, title, story, writer, donatedNum, targetNum, summary, timestamp);
+    public void postFirebase() {
+        SharedPreferences pref = getSharedPreferences("KEY", MODE_PRIVATE);
+        String public_key = pref.getString("PUBLIC_KEY", null);
+
+        Post post = new Post(postID, title, story, writer, donatedNum, targetNum, summary, timestamp, public_key);
         myRef.child("posts").child(postID).setValue(post);
     }
 

@@ -6,29 +6,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Post {
-    public String postID;
+    public String post_id;
     public String title;
     public String story;
-    public String writer;
-    public Integer donatedNum;
-    public Integer targetNum;
+    public String user_id;
+    public Integer donated_num;
+    public Integer target_num;
     public String summary;
     public String timestamp;
+    public String public_key;
 //    public ArrayList<Comment> comments;
 
     public Post(){
 
     }
 
-    public Post(String postID, String title, String story, String writer, Integer donatedNum, Integer targetNum, String summary, String timestamp){
-        this.postID = postID;
+    public Post(String postID, String title, String story, String writer, Integer donatedNum, Integer targetNum, String summary, String timestamp, String public_key) {
+        this.post_id = postID;
         this.title = title;
         this.story = story;
-        this.writer = writer;
-        this.donatedNum = donatedNum;
-        this.targetNum = targetNum;
+        this.user_id = writer;
+        this.donated_num = donatedNum;
+        this.target_num = targetNum;
         this.summary = summary;
         this.timestamp = timestamp;
+        this.public_key = public_key;
     }
 
 
@@ -36,12 +38,12 @@ public class Post {
     @Exclude
     public Map<String, Object> toMap(){
         HashMap<String, Object> result = new HashMap<>();
-        result.put("postID", postID);
+        result.put("postID", post_id);
         result.put("title", title);
         result.put("content", story);
-        result.put("user_id", writer);
-        result.put("donated_num", donatedNum);
-        result.put("goal_num", targetNum);
+        result.put("user_id", user_id);
+        result.put("donated_num", donated_num);
+        result.put("goal_num", target_num);
         result.put("abstract", summary);
         result.put("timestamp", timestamp);
         return result;

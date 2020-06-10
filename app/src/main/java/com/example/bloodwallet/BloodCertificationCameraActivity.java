@@ -38,6 +38,9 @@ public class BloodCertificationCameraActivity extends Activity implements Surfac
 
     private TessBaseAPI tess;
     String dataPath = "";
+    String userID;
+    String userName;
+    String userBirthDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,10 @@ public class BloodCertificationCameraActivity extends Activity implements Surfac
         Toast.makeText(this, "등록할 헌혈 증서를 카메라에 가져다주세요", Toast.LENGTH_LONG).show();
 
         cameraView = (SurfaceView)findViewById(R.id.blood_certificate_camera);
+
+        userID = getIntent().getStringExtra("userID");
+        userName = getIntent().getStringExtra("userName");
+        userBirthDate = getIntent().getStringExtra("userBirthDate");
 
         camera = Camera.open();
         camera.setDisplayOrientation(90);
@@ -109,11 +116,14 @@ public class BloodCertificationCameraActivity extends Activity implements Surfac
             byte[] byteArray = stream.toByteArray();
             intent.putExtra("certificate", byteArray);
 
-            bitmap = overlay(bitmap);
+//            bitmap = overlay(bitmap);
             String ocrResult = processOcrFromBitmap(bitmap);
             Log.d("test", ocrResult);
 
             intent.putExtra("ocr", ocrResult);
+            intent.putExtra("userID", userID);
+            intent.putExtra("userName", userName);
+            intent.putExtra("userBirthDate", userBirthDate);
             startActivity(intent);
             finish();
         }

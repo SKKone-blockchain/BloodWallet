@@ -45,38 +45,6 @@
         android:scrollbars="vertical"
         android:scrollbarStyle="insideInset"/>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:background="@color/colorHorizontalLine"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_weight="1.3"
-            android:layout_height="wrap_content"
-            android:text="목표 헌혈증 갯수 : "
-            android:textSize="15sp"
-            android:gravity="center"/>
-
-        <EditText
-            android:id="@+id/story_posting_goal"
-            android:layout_width="0dp"
-            android:layout_weight="2"
-            android:layout_height="wrap_content"
-            android:inputType="numberDecimal"
-            android:layout_marginRight="10dp"
-            android:textAlignment="center"/>
-
-    </LinearLayout>
-
     <Button
         android:id="@+id/story_posting_submit"
         android:layout_width="match_parent"

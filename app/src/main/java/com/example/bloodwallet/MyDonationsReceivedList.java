@@ -1,7 +1,6 @@
 package com.example.bloodwallet;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,7 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import static com.example.bloodwallet.Constants.CHAIN_ID;
-import static com.example.bloodwallet.Constants.CONTRACT_ADDRES;
+import static com.example.bloodwallet.Constants.CONTRACT_ADDRESS;
 import static com.example.bloodwallet.Constants.GAS_PROVIDER;
 
 public class MyDonationsReceivedList extends AppCompatActivity {
@@ -94,7 +93,7 @@ public class MyDonationsReceivedList extends AppCompatActivity {
         });
 
         mContract = BloodWallet.load(
-                CONTRACT_ADDRES,
+                CONTRACT_ADDRESS,
                 CaverFactory.get(),
                 KlayCredentials.create(private_key),
                 CHAIN_ID,
@@ -130,12 +129,12 @@ public class MyDonationsReceivedList extends AppCompatActivity {
 
                     // Add data into list
                     title.add(post_list.get(i).title);
-                    story.add(post_list.get(i).content);
+                    story.add(post_list.get(i).story);
 
                     double donated = post_list.get(i).donated_num;
-                    double goal = post_list.get(i).goal_num;
+                    double goal = post_list.get(i).target_num;
                     System.out.println("Percent " + donated / goal * 100.0f);
-
+`   `
                     percent.add(String.format("%.1f", donated/goal  * 100.0f) + "%");
                     time.add(post_list.get(i).timestamp.split("-")[1] + "월" +  post_list.get(i).timestamp.split("-")[2] + "일");
 
@@ -209,11 +208,12 @@ public class MyDonationsReceivedList extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            DonationsRecievedListReading view= new DonationsRecievedListReading(getApplicationContext());
+            DonationsRecievedListReading view = new DonationsRecievedListReading(getApplicationContext());
             view.setTitle(title.get(position));
             view.setTime(time.get(position));
             view.setStory(story.get(position));
             view.percent(percent.get(position));
+            // TODO: view.setPercent();
 
             return view;
         }

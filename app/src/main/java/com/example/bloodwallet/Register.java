@@ -83,7 +83,6 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void onCodeSent(String verificationId,
                                            PhoneAuthProvider.ForceResendingToken forceResendingToken) {
-
                     }
 
                     @Override

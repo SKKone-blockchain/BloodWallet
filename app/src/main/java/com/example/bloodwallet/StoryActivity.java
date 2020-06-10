@@ -36,6 +36,7 @@ public class StoryActivity extends AppCompatActivity {
 
     String userID;
     String postID;
+    String writer;
 
     TextView patientIDTextView;
     TextView patientInfoTextView;
@@ -51,6 +52,7 @@ public class StoryActivity extends AppCompatActivity {
         Intent intent2 = getIntent();
         userID = intent2.getStringExtra("userID");
         postID = intent2.getStringExtra("postID");
+        writer = intent2.getStringExtra("writer");
         loadDataFromFirebase();
 
         ImageButton myInfoButton = findViewById(R.id.myinfobutton_list);
@@ -89,6 +91,8 @@ public class StoryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(  StoryActivity.this , Donation.class );
                 i.putExtra("userID",userID);
+                i.putExtra("postID", postID);
+                i.putExtra("writer", writer);
                 startActivity(i);
             }
         });
@@ -105,9 +109,11 @@ public class StoryActivity extends AppCompatActivity {
                 HashMap<String, HashMap> posts = (HashMap)dataSnapshot.getValue();
                 HashMap<String, HashMap> comments = posts.get("comments");
                 commentList.clear();
-                for (Map.Entry<String, HashMap> entry : comments.entrySet()) {
-                    String comment = entry.getValue().get("content").toString();
-                    commentList.add(comment);
+                if (comments != null && comments.isEmpty() == false) {
+                    for (Map.Entry<String, HashMap> entry : comments.entrySet()) {
+                        String comment = entry.getValue().get("content").toString();
+                        commentList.add(comment);
+                    }
                 }
                 listView.setAdapter(adapter);
 
@@ -133,11 +139,11 @@ public class StoryActivity extends AppCompatActivity {
                 sex = (sex.equals("male"))? "남자" : "여자";
 
                 String birthDate = users.get("birthdate").toString();
-                int patientYear = Integer.parseInt(birthDate.substring(0, 2)) + 1900;
-                SimpleDateFormat formatter = new SimpleDateFormat("yyMMdd");
+                int patientYear = Integer.parseInt(birthDate.substring(0, 4));
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
                 Date date = new Date(System.currentTimeMillis());
                 String today = formatter.format(date);
-                int year = Integer.parseInt(today.substring(0, 2)) + 2000;
+                int year = Integer.parseInt(today.substring(0, 4));
                 String info = ((year - patientYear + 1) + "세, ") + sex;
 
                 patientInfoTextView.setText(info);
