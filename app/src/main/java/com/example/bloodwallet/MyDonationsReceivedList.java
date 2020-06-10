@@ -134,7 +134,6 @@ public class MyDonationsReceivedList extends AppCompatActivity {
                     double donated = post_list.get(i).donated_num;
                     double goal = post_list.get(i).target_num;
                     System.out.println("Percent " + donated / goal * 100.0f);
-`   `
                     percent.add(String.format("%.1f", donated/goal  * 100.0f) + "%");
                     time.add(post_list.get(i).timestamp.split("-")[1] + "월" +  post_list.get(i).timestamp.split("-")[2] + "일");
 

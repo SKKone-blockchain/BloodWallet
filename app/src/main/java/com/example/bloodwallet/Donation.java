@@ -74,6 +74,7 @@ public class Donation extends AppCompatActivity implements WithProgressView {
     private String result_line = "";
     private int success = 0;
     private int num_donated = 0;
+    boolean flag = false;
 
     int i=1;
     private Spinner spinner;
@@ -94,7 +95,7 @@ public class Donation extends AppCompatActivity implements WithProgressView {
     private String receiver_public_key;
     private ArrayList<String> available_certificates = new ArrayList<>();
 
-    // TODO: 넘어와야 하는 것: Writer, Post ID
+    // 넘어와야 하는 것: Writer, Post ID
     private String writer;
     private String post_id;
 
@@ -127,11 +128,12 @@ public class Donation extends AppCompatActivity implements WithProgressView {
         patientInfoTextView = findViewById(R.id.donation_patient_info);
 
         SharedPreferences pref = getSharedPreferences("KEY", MODE_PRIVATE);
-        privateKey = pref.getString("PRIVATE_KEY", null);
+        privateKey = pref.getString("PRIVATE_KEY", "0x63e98ad7ee907dc08f2f3934808d256ff1dcc417579a1ccce577f67e341da43b");
         System.out.println("Private Key: " + privateKey);
+
         assert privateKey != null;
 
-        // TODO: 기부 받을 사람의 Public key 가져오기
+        // 기부 받을 사람의 Public key 가져오기
         DatabaseReference public_ref = mDatabase.getReference("users/"+ writer + "/public_key");
         public_ref.addValueEventListener(new ValueEventListener() {
             @Override
@@ -154,7 +156,7 @@ public class Donation extends AppCompatActivity implements WithProgressView {
                 String birthdate = dataSnapshot.child("birthdate").getValue(String.class);
                 int userYear = Integer.parseInt(birthdate.substring(0, 4));
 
-                // TODO:나이 계산하기
+                // 나이 계산하기
                 sex = (sex.equals("male"))? "남자" : "여자";
 
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
@@ -198,22 +200,24 @@ public class Donation extends AppCompatActivity implements WithProgressView {
                 System.out.println("Success; available certificates: " + available_certificates.size());
                 int numOfCertificate = available_certificates.size();
 
-                if (numOfCertificate <= 0){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(Donation.this);
-                    builder.setTitle("\n죄송합니다.")
-                            .setMessage("보유한 헌혈 증서가 없습니다.")
-                            .setCancelable(false)// 뒤로버튼으로 취소금지
-                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                if (!flag) {
+                    if (numOfCertificate <= 0) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Donation.this);
+                        builder.setTitle("\n죄송합니다.")
+                                .setMessage("보유한 헌혈 증서가 없습니다.")
+                                .setCancelable(false)// 뒤로버튼으로 취소금지
+                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
 
-                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    public void onClick(DialogInterface dialog, int whichButton) {
 
-                                    dialog.cancel();
-                                    Intent intent = new Intent(Donation.this, StoryListActivity.class);
-                                    startActivity(intent);
-                                }
-                            });
-                    AlertDialog dialog2 = builder.create();
-                    dialog2.show();
+                                        dialog.cancel();
+                                        Intent intent = new Intent(Donation.this, StoryListActivity.class);
+                                        startActivity(intent);
+                                    }
+                                });
+                        AlertDialog dialog2 = builder.create();
+                        dialog2.show();
+                    }
                 }
 
                 holding_count = (TextView)findViewById(R.id.holding_count);
@@ -346,23 +350,11 @@ public class Donation extends AppCompatActivity implements WithProgressView {
         current_num_smart_contract_call += 1;
 
         if (resp == null || resp.getError() != null) {
-            result_line += resp == null ? "Fee Payer에 연결에 실패하였습니다.\n\n"
+            result_line = resp == null ? "Fee Payer에 연결에 실패하였습니다.\n\n"
                     : "기부에 실패하였습니다.: " + resp.getError() +"\n\n";
-        } else {
-            success ++;
-            result_line += "성공; Transaction Hash: " + resp.getTxhash() + "\n\n";
-            Log.d(TAG , resp.getTxhash());
-        }
-
-        if(current_num_smart_contract_call == num_smart_contract_call){
-            current_num_smart_contract_call = 0;
-            num_smart_contract_call = 0;
-            NONCE_BIAS = BigInteger.valueOf(0);
-            System.out.println("Reset nonce bias " + NONCE_BIAS);
-
             AlertDialog.Builder builder = new AlertDialog.Builder(Donation.this);
-            builder.setTitle("\n헌혈증 기부가 완료되었습니다.")
-                    .setMessage(String.valueOf(success) +"개의 헌혈증 기부 성공!\n\n" + result_line)
+            builder.setTitle("\n헌혈증서 기부 결과")
+                    .setMessage(String.valueOf(success) + "개의 헌혈증 기부 성공!\n\n" + result_line)
                     .setCancelable(false)// 뒤로버튼으로 취소금지
                     .setPositiveButton("확인", new DialogInterface.OnClickListener() {
 
@@ -375,50 +367,82 @@ public class Donation extends AppCompatActivity implements WithProgressView {
                     });
             AlertDialog dialog2 = builder.create();
             dialog2.show();
+            flag = true;
+        }
+        else {
+            success ++;
+            result_line += "성공; Transaction Hash: " + resp.getTxhash() + "\n\n";
+            Log.d(TAG , resp.getTxhash());
 
-            // Firebase에 정보 Update 하기기
-            DatabaseReference postReference = mDatabase.getReference("posts/" + post_id);
 
-            // 1. Post에 기부된 개수
-            Map<String, Object> postUpdate = new HashMap<>();
-            postUpdate.put("donated_num", num_donated + 1);
+            if(current_num_smart_contract_call == num_smart_contract_call) {
+                current_num_smart_contract_call = 0;
+                num_smart_contract_call = 0;
+                NONCE_BIAS = BigInteger.valueOf(0);
+                System.out.println("Reset nonce bias " + NONCE_BIAS);
 
-            // 2. Post에 comment 추가
-            EditText commentEditTextView = (EditText)findViewById(R.id.donation_comment);
-            String comment = commentEditTextView.getText().toString();
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
-            Date date = new Date();
-            String timestamp = formatter.format(date);
-            postUpdate.put("comments/comment"+timestamp, new Comment(timestamp, comment, userID));
+                AlertDialog.Builder builder = new AlertDialog.Builder(Donation.this);
+                builder.setTitle("\n헌혈증서 기부 결과")
+                        .setMessage(String.valueOf(success) + "개의 헌혈증 기부 성공!\n\n" + result_line)
+                        .setCancelable(false)// 뒤로버튼으로 취소금지
+                        .setPositiveButton("확인", new DialogInterface.OnClickListener() {
 
-            postReference.updateChildren(postUpdate);
+                            public void onClick(DialogInterface dialog, int whichButton) {
 
-            // 3. 사용된 헌혈증서의 owner를 기부받은 사람으로 바꾸기
-            DatabaseReference certificate_owner_ref = mDatabase.getReference("certificates");
-            Map<String, Object> certificateUpdate = new HashMap<>();
+                                dialog.cancel();
+                                Intent intent = new Intent(Donation.this, MainInfo.class);
+                                startActivity(intent);
+                            }
+                        });
+                AlertDialog dialog2 = builder.create();
+                dialog2.show();
+                flag = true;
 
-            for(int i = 0; i < success; i++){
-                certificateUpdate.put(available_certificates.get(i) + "/owner/owner_id", writer);
+                // Firebase에 정보 Update 하기기
+                DatabaseReference postReference = mDatabase.getReference("posts/" + post_id);
+
+                // 1. Post에 기부된 개수
+                Map<String, Object> postUpdate = new HashMap<>();
+                postUpdate.put("donated_num", num_donated + 1);
+
+                // 2. Post에 comment 추가
+                EditText commentEditTextView = (EditText) findViewById(R.id.donation_comment);
+                String comment = commentEditTextView.getText().toString();
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+                Date date = new Date();
+                String timestamp = formatter.format(date);
+                postUpdate.put("comments/comment" + timestamp, new Comment(timestamp, comment, userID));
+
+                postReference.updateChildren(postUpdate);
+
+                // 3. 사용된 헌혈증서의 owner를 기부받은 사람으로 바꾸기
+                DatabaseReference certificate_owner_ref = mDatabase.getReference("certificates");
+                Map<String, Object> certificateUpdate = new HashMap<>();
+
+                for (int i = 0; i < success; i++) {
+                    certificateUpdate.put(available_certificates.get(i) + "/owner/owner_id", writer);
+                }
+                certificate_owner_ref.updateChildren(certificateUpdate);
+
+                // 4. User의 보유 헌혈증 개수 update하기
+                DatabaseReference user_ref = mDatabase.getReference("users/" + userID);
+                Map<String, Object> userUpdate = new HashMap<>();
+                userUpdate.put("holding_count", available_certificates.size() - success);
+                user_ref.updateChildren(userUpdate);
+
+                // 5. User의 기부 내역
+                DatabaseReference donation_ref = mDatabase.getReference("users/" + userID + "/donations");
+                Map<String, Object> donationUpdate = new HashMap<>();
+                for (int i = 0; i < success; i++) {
+                    donationUpdate.put(available_certificates.get(i), post_id);
+                }
+                donation_ref.updateChildren(donationUpdate);
+
+
+                result_line = "";
+                success = 0;
+
             }
-            certificate_owner_ref.updateChildren(certificateUpdate);
-
-            // 4. User의 보유 헌혈증 개수 update하기
-            DatabaseReference user_ref = mDatabase.getReference("users/" + userID);
-            Map<String, Object> userUpdate = new HashMap<>();
-            userUpdate.put("holdingCount", available_certificates.size() - success);
-            user_ref.updateChildren(userUpdate);
-
-            // 5. User의 기부 내역
-            DatabaseReference donation_ref = mDatabase.getReference("users/" + userID +"/donations");
-            Map<String, Object> donationUpdate = new HashMap<>();
-            for(int i = 0; i < success; i++){
-                donationUpdate.put(available_certificates.get(i), post_id);
-            }
-            donation_ref.updateChildren(donationUpdate);
-
-
-            result_line = "";
-            success = 0;
         }
 
     }
