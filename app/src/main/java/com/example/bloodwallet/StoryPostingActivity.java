@@ -45,6 +45,7 @@ public class StoryPostingActivity extends AppCompatActivity {
     String summary;
     String tarNumString;
     String userID;
+    String timestamp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +68,7 @@ public class StoryPostingActivity extends AppCompatActivity {
             public void onClick(View view) {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
                 Date date = new Date();
-                String timestamp = formatter.format(date);
+                timestamp = formatter.format(date);
 
 
                 title = et_title.getText().toString();
@@ -128,7 +129,7 @@ public class StoryPostingActivity extends AppCompatActivity {
 
     // firebase에 업로드
     public void postFirebase(){
-        Post post = new Post(postID, title, story, writer, donatedNum, targetNum, summary);
+        Post post = new Post(postID, title, story, writer, donatedNum, targetNum, summary, timestamp);
         myRef.child("posts").child(postID).setValue(post);
     }
 
