@@ -21,16 +21,17 @@ public class DonationsRecievedListReading extends LinearLayout {
     public DonationsRecievedListReading(Context context) {
         super(context);
         inflation_init(context);
-        RecievedtitleView= (TextView)findViewById(R.id.title_recievedreading);
-        RecievedtimeView=(TextView)findViewById(R.id.time_recievedreading);
-        RecievedstoryView= (TextView)findViewById(R.id.stoty_recievedreading);
-        RecievedpercentView= (TextView)findViewById(R.id.percent_recievedreading);
+
+        RecievedtitleView = (TextView)findViewById(R.id.title_recievedreading);
+        RecievedtimeView = (TextView)findViewById(R.id.time_recievedreading);
+        RecievedstoryView = (TextView)findViewById(R.id.stoty_recievedreading);
+        RecievedpercentView = (TextView)findViewById(R.id.percent_recievedreading);
         ProgressBar = findViewById(R.id.progress_receivedreading);
+        ProgressBar.setProgressBarColor(getResources().getColor(R.color.colorPrimary));
     }
-    private void inflation_init(Context context){
+    private void inflation_init(Context context) {
         LayoutInflater inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.activity_donations_received_list_reading,this, true);
-
     }
 
     public void setTitle(String title){
