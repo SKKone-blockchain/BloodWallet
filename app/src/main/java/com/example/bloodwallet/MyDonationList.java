@@ -1,6 +1,7 @@
 package com.example.bloodwallet;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,7 @@ import org.web3j.abi.datatypes.Int;
 import org.web3j.tuples.Tuple;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
@@ -43,10 +45,11 @@ public class MyDonationList extends AppCompatActivity {
     ArrayList<String> time = new ArrayList<>(); //{"10:56 PM","2:00 PM","11:03 AM","07:14 AM"};
     ArrayList<String> story = new ArrayList<>(); //{"aaaa","bbbb","cccc","dddd"};
     ArrayList<String> percent = new ArrayList<>(); //{"0%","30%", "95%", "100%"};
+    ArrayList<Float> num_percent = new ArrayList<>();
     ArrayList<String> check = new ArrayList<>(); //{"사용\n대기중","사용\n대기중","사용\n대기중","사용\n완료"};
 
     String userID;
-    HashMap<String, String> post2certificate = new HashMap<>();
+    HashMap<String, ArrayList<String>> post2certificate = new HashMap<>();
     HashMap<String, Integer> certificate2index = new HashMap<>();
     public int index = 0;
     HashMap<String, String> code2hospital = new HashMap<>();
@@ -56,7 +59,7 @@ public class MyDonationList extends AppCompatActivity {
     private String address = "";
 
 
-    private ArrayList<String> address_list = new ArrayList<>();
+//    private ArrayList<String> address_list = new ArrayList<>();
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
 
     @Override
@@ -65,7 +68,7 @@ public class MyDonationList extends AppCompatActivity {
         setContentView(R.layout.activity_my_donation_list);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
-        userID=intent.getStringExtra("userID");
+        userID = intent.getStringExtra("userID");
         listView =(ListView) findViewById(R.id.donatedlist);
         adapter = new myadapter();
         listView.setAdapter(adapter);
@@ -90,19 +93,17 @@ public class MyDonationList extends AppCompatActivity {
             }
         });
 
-        // SharedPreferences pref = getSharedPreferences("KEY", MODE_PRIVATE);
-        // TODO: private key load 해서 사용하기
-        // TODO: User의 Public key를 가져오기
-        private_key = "0x63e98ad7ee907dc08f2f3934808d256ff1dcc417579a1ccce577f67e341da43b"; //pref.getString("PRIVATE_KEY", null);
+        // private key load 해서 사용하기
+        // User의 Public key를 가져오기
+        SharedPreferences pref = getSharedPreferences("KEY", MODE_PRIVATE);
+        private_key = pref.getString("PRIVATE_KEY", "0x63e98ad7ee907dc08f2f3934808d256ff1dcc417579a1ccce577f67e341da43b");
         System.out.println("Private Key: " + private_key);
         assert private_key != null;
 
-        address = "0x5039d770becfa6ae56df428f4a3f413560b15678"; //pref.getString("PUBLIC_KEY", null);
+        address = pref.getString("PUBLIC_KEY", "0x5039d770becfa6ae56df428f4a3f413560b15678");
         System.out.println("Public Key: " + address);
         assert address != null;
 
-        // TODO: user id intent 다시 정리하기
-        userID = "sk";
 
         mContract = BloodWallet.load(
                 CONTRACT_ADDRESS,
@@ -212,6 +213,7 @@ public class MyDonationList extends AppCompatActivity {
             view.setStory(story.get(position));
             view.percent(percent.get(position));
             view.check(check.get(position));
+            view.setPercent(num_percent.get(position));
 
 
             return view;
@@ -246,7 +248,13 @@ public class MyDonationList extends AppCompatActivity {
 
                 for (DataSnapshot donateSnapshot : dataSnapshot.getChildren()){
                     // TODO: 기부한 Post ID, Certificates map 생성
-                    post2certificate.put(donateSnapshot.getValue(String.class), donateSnapshot.getKey());
+                    if (post2certificate.containsKey(donateSnapshot.getValue(String.class))){
+                        post2certificate.get(donateSnapshot.getValue(String.class)).add(donateSnapshot.getKey());
+                    }
+                    else{
+                        post2certificate.put(donateSnapshot.getValue(String.class), new ArrayList<String>(Arrays.asList(donateSnapshot.getKey())));
+                    }
+
                 }
                 listener.onSuccess(dataSnapshot);
             }
@@ -303,41 +311,45 @@ public class MyDonationList extends AppCompatActivity {
                     if (post2certificate.containsKey(postSnapshot.getKey())){
                         // TODO: getOwner로 확인하기
                         OwnerCheckTask ownerCheckTask = new OwnerCheckTask();
-                        String a = post2certificate.get(postSnapshot.getKey());
-                        ownerCheckTask.execute(a);
+                        ArrayList<String> certificate_list = post2certificate.get(postSnapshot.getKey());
+
+                        ownerCheckTask.execute(certificate_list.get(0));
                         String owner = "";
-                        try{
+                        try {
                             owner = ownerCheckTask.get();
                             owner = owner.replace("=", ",");
                             owner = owner.split(",")[1];
                             System.out.println("Owner: " + owner);
 
 
-                        }
-                        catch (InterruptedException e) {
+                        } catch (InterruptedException e) {
                             e.printStackTrace();
-                        }
-                        catch (ExecutionException e) {
+                        } catch (ExecutionException e) {
                             e.printStackTrace();
                         }
 
-                        if (owner.equals(postSnapshot.child("public_key").getValue(String.class))){
+                        if (owner.equals(postSnapshot.child("public_key").getValue(String.class))) {
                             // TODO: 동일하면 Append
                             title.add(postSnapshot.child("title").getValue(String.class));
                             time.add(postSnapshot.child("timestamp").getValue(String.class).split("-")[1] + "월" + postSnapshot.child("timestamp").getValue(String.class).split("-")[2] + "일");
-                            story.add(postSnapshot.child("content").getValue(String.class));
+                            story.add(postSnapshot.child("story").getValue(String.class));
 
-                            double donated = postSnapshot.child("donated_num").getValue(Integer.class);
-                            double goal = postSnapshot.child("goal_num").getValue(Integer.class);
+                            float donated = postSnapshot.child("donated_num").getValue(Integer.class);
+                            float goal = postSnapshot.child("target_num").getValue(Integer.class);
                             System.out.println("Percent " + donated / goal * 100.0f);
+                            num_percent.add(donated / goal * 100.0f);
+                            percent.add(String.format("%.1f", donated / goal * 100.0f) + "%");
 
-                            percent.add(String.format("%.1f", donated/goal  * 100.0f) + "%");
 
                             check.add("");
 
-                            certificate2index.put(post2certificate.get(postSnapshot.getValue(String.class)), index);
-                            index ++;
+                            for (int i = 0; i < certificate_list.size(); i++) {
+                                certificate2index.put(certificate_list.get(i), index);
+
+                            }
+
                         }
+                        index++;
 
                     }
 

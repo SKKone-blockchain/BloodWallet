@@ -4,7 +4,10 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 public class DonationListReading extends LinearLayout {
 
@@ -13,6 +16,7 @@ public class DonationListReading extends LinearLayout {
     TextView donationstoryView;
     TextView donationpercentView;
     TextView donationcheckView;
+    CircularProgressBar ProgressBar;
 
     public DonationListReading(Context context) {
         super(context);
@@ -22,6 +26,7 @@ public class DonationListReading extends LinearLayout {
         donationstoryView= (TextView)findViewById(R.id.stoty_listreading);
         donationpercentView= (TextView)findViewById(R.id.percent_listreading);
         donationcheckView= (TextView)findViewById(R.id.check_listreading);
+        ProgressBar = findViewById(R.id.progress_reading);
     }
     private void inflation_init(Context context){
         LayoutInflater inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -40,5 +45,6 @@ public class DonationListReading extends LinearLayout {
     }
     public void percent(String percent){ donationpercentView.setText(percent);}
     public void check(String check){ donationcheckView.setText(check);}
+    public void setPercent(float percent) { ProgressBar.setProgress(percent); }
 
 }
