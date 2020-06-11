@@ -41,6 +41,7 @@ public class MyDonationsReceivedList extends AppCompatActivity {
     private BloodWallet mContract;
     private String private_key = "";
     private String address = "";
+    boolean isStarted;
 
     private ArrayList<Post> postList = new ArrayList<>();
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
@@ -54,6 +55,8 @@ public class MyDonationsReceivedList extends AppCompatActivity {
         Intent intent = getIntent();
         userID = intent.getStringExtra("userID");
         System.out.println("User id via intent :" + userID);
+
+        isStarted = false;
 
         listView = (ListView)findViewById(R.id.donationreceivedlist);
 
@@ -159,8 +162,11 @@ public class MyDonationsReceivedList extends AppCompatActivity {
                     AlertDialog dialog2 = builder.create();
                     dialog2.show();
                 } else {
-                    System.out.println("Nothing changed");
-                    Toast.makeText(getApplicationContext(), "헌혈 증서 기부 기록이 무결합니다.", Toast.LENGTH_SHORT).show();
+                    if(!isStarted) {
+                        System.out.println("Nothing changed");
+                        Toast.makeText(getApplicationContext(), "헌혈 증서 기부 기록이 무결합니다.", Toast.LENGTH_SHORT).show();
+                        isStarted = true;
+                    }
                 }
 
                 listView.setAdapter(adapter);

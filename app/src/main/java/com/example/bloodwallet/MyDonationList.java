@@ -50,6 +50,7 @@ public class MyDonationList extends AppCompatActivity {
     private BloodWallet mContract;
     private String private_key = "";
     private String address = "";
+    boolean isStarted;
 
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
 
@@ -63,6 +64,7 @@ public class MyDonationList extends AppCompatActivity {
         listView = (ListView) findViewById(R.id.donatedlist);
         adapter = new MyDonationAdapter();
         listView.setAdapter(adapter);
+        isStarted = false;
 
         ImageButton myinfobutton=findViewById(R.id.myinfobutton_list);
         myinfobutton.setOnClickListener(new View.OnClickListener(){
@@ -146,7 +148,10 @@ public class MyDonationList extends AppCompatActivity {
                                             AlertDialog dialog2 = builder.create();
                                             dialog2.show();
                                         } else {
-                                            Toast.makeText(getApplicationContext(),"헌혈증서 기부 기록이 무결합니다.",Toast.LENGTH_SHORT).show();
+                                            if (!isStarted) {
+                                                Toast.makeText(getApplicationContext(), "헌혈증서 기부 기록이 무결합니다.", Toast.LENGTH_SHORT).show();
+                                                isStarted = true;
+                                            }
                                         }
                                     }
 
