@@ -24,13 +24,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.klaytn.caver.crypto.KlayCredentials;
 
-import org.web3j.abi.datatypes.Int;
-import org.web3j.tuples.Tuple;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.NonNull;
@@ -42,13 +38,7 @@ import static com.example.bloodwallet.Constants.GAS_PROVIDER;
 
 public class MyDonationList extends AppCompatActivity {
     ListView listView;
-    myadapter adapter;
-    ArrayList<String> title = new ArrayList<>(); //{"혈액이 급합니다 도와주세요(백혈병)","교통사고 수술(교통사고)","희귀병 수술을 위한 혈액이 필요해요(희귀병)","수술할 돈이 없습니다(대장암)"};
-    ArrayList<String> time = new ArrayList<>(); //{"10:56 PM","2:00 PM","11:03 AM","07:14 AM"};
-    ArrayList<String> story = new ArrayList<>(); //{"aaaa","bbbb","cccc","dddd"};
-    ArrayList<String> percent = new ArrayList<>(); //{"0%","30%", "95%", "100%"};
-    ArrayList<Float> num_percent = new ArrayList<>();
-    ArrayList<String> check = new ArrayList<>(); //{"사용\n대기중","사용\n대기중","사용\n대기중","사용\n완료"};
+    MyDonationAdapter adapter;
 
     String userID;
     HashMap<String, ArrayList<String>> post2certificate = new HashMap<>();
@@ -61,8 +51,6 @@ public class MyDonationList extends AppCompatActivity {
     private String private_key = "";
     private String address = "";
 
-
-//    private ArrayList<String> address_list = new ArrayList<>();
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
 
     @Override
@@ -72,10 +60,9 @@ public class MyDonationList extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent intent = getIntent();
         userID = intent.getStringExtra("userID");
-        listView =(ListView) findViewById(R.id.donatedlist);
-        adapter = new myadapter();
+        listView = (ListView) findViewById(R.id.donatedlist);
+        adapter = new MyDonationAdapter();
         listView.setAdapter(adapter);
-
 
         ImageButton myinfobutton=findViewById(R.id.myinfobutton_list);
         myinfobutton.setOnClickListener(new View.OnClickListener(){
@@ -86,13 +73,21 @@ public class MyDonationList extends AppCompatActivity {
             }
         });
 
-
         ListView listView = (ListView) findViewById(R.id.donatedlist);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent i = new Intent(  MyDonationList.this , StoryActivity.class );
-                i.putExtra("Button_on",0);
-                startActivity(i);
+                Intent intent = new Intent(MyDonationList.this , StoryActivity.class);
+
+                intent.putExtra("Button_on",0);
+                intent.putExtra("userID", userID);
+                MyDonationListItem item = (MyDonationListItem) listView.getItemAtPosition(position);
+                intent.putExtra("postID", item.postID);
+                intent.putExtra("writer", item.writer);
+                intent.putExtra("title", item.title);
+                intent.putExtra("content", item.content);
+                intent.putExtra("donatedNum", item.donatedNum);
+                intent.putExtra("goalNum", item.goalNum);
+                startActivity(intent);
             }
         });
 
@@ -107,7 +102,6 @@ public class MyDonationList extends AppCompatActivity {
         System.out.println("Public Key: " + address);
         assert address != null;
 
-
         mContract = BloodWallet.load(
                 CONTRACT_ADDRESS,
                 CaverFactory.get(),
@@ -116,7 +110,6 @@ public class MyDonationList extends AppCompatActivity {
                 GAS_PROVIDER
         );
 
-        // TODO: 내가 쓴 글 List 정보 띄우기
         DatabaseReference donationReference = mDatabase.getReference("users/" + userID + "/donations");
         DatabaseReference postReference = mDatabase.getReference("posts");
         DatabaseReference hospitalReference = mDatabase.getReference("certificates");
@@ -125,22 +118,20 @@ public class MyDonationList extends AppCompatActivity {
         getHospitalCode(hosCodeReference, new onGetDataListener() {
             @Override
             public void onSuccess(DataSnapshot dataSnapshot) {
-
                 getDonationHistory(donationReference, new onGetDataListener() {
+
                     @Override
                     public void onSuccess(DataSnapshot dataSnapshot) {
-
                         System.out.println("Success step 1");
                         getPost(postReference, new onGetDataListener() {
+
                             @Override
                             public void onSuccess(DataSnapshot dataSnapshot) {
                                 System.out.println("Success step 2");
                                 getHospitalHistory(hospitalReference, new onGetDataListener() {
+
                                     @Override
                                     public void onSuccess(DataSnapshot dataSnapshot) {
-                                        adapter = new myadapter();
-                                        listView.setAdapter(adapter);
-
                                         if (isChanged){
                                             AlertDialog.Builder builder = new AlertDialog.Builder(MyDonationList.this);
                                             builder.setTitle("\n헌혈증서 기부 내역 조회")
@@ -149,14 +140,12 @@ public class MyDonationList extends AppCompatActivity {
                                                     .setPositiveButton("확인", new DialogInterface.OnClickListener() {
 
                                                         public void onClick(DialogInterface dialog, int whichButton) {
-
                                                             dialog.cancel();
                                                         }
                                                     });
                                             AlertDialog dialog2 = builder.create();
                                             dialog2.show();
-                                        }
-                                        else {
+                                        } else {
                                             Toast.makeText(getApplicationContext(),"헌혈증서 기부 기록이 무결합니다.",Toast.LENGTH_SHORT).show();
                                         }
                                     }
@@ -207,18 +196,18 @@ public class MyDonationList extends AppCompatActivity {
 
             }
         });
-
-
     }
 
+    class MyDonationAdapter extends BaseAdapter {
 
-    class myadapter extends BaseAdapter{
+        private ArrayList<MyDonationListItem> listViewItemList = new ArrayList<MyDonationListItem>();
+
         @Override
-        public int getCount() { return title.size(); }
+        public int getCount() { return listViewItemList.size(); }
 
         @Override
         public Object getItem(int position) {
-            return title.get(position);
+            return listViewItemList.get(position);
         }
 
         @Override
@@ -228,21 +217,42 @@ public class MyDonationList extends AppCompatActivity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            DonationListReading view = new DonationListReading(getApplicationContext());
 
-            DonationListReading view= new DonationListReading(getApplicationContext());
-            view.setTitle(title.get(position));
-            view.setTime(time.get(position));
-            view.setStory(story.get(position));
-            view.percent(percent.get(position));
-            view.check(check.get(position));
-            view.setPercent(num_percent.get(position));
-
+            MyDonationListItem item = (MyDonationListItem) getItem(position);
+            view.setTitle(item.title);
+            view.setTime(item.time);
+            view.setStory(item.content);
+            view.check(item.check);
+            int percent = (int)((double)item.donatedNum / item.goalNum * 100);
+            view.percent(percent + "%");
+            view.setPercent(percent);
 
             return view;
         }
+
+        public void addItem(MyDonationListItem item) {
+            listViewItemList.add(item);
+        }
+
+        public void clearAllItems() {
+            listViewItemList.clear();
+        }
     }
 
-    public void getHospitalCode(DatabaseReference databaseReference, final onGetDataListener listener){
+    public class MyDonationListItem {
+        public String postID;
+        public String writer;
+        public String title;
+        public String content;
+        public String summary;
+        public String time;
+        public String check;
+        public int donatedNum;
+        public int goalNum;
+    }
+
+    public void getHospitalCode(DatabaseReference databaseReference, final onGetDataListener listener) {
         listener.onStart();
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -259,7 +269,6 @@ public class MyDonationList extends AppCompatActivity {
                 listener.onFailure();
             }
         });
-
     }
 
     public void getDonationHistory(DatabaseReference databaseReference, final onGetDataListener listener){
@@ -267,17 +276,15 @@ public class MyDonationList extends AppCompatActivity {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
                 for (DataSnapshot donateSnapshot : dataSnapshot.getChildren()){
                     // TODO: 기부한 Post ID, Certificates map 생성
-                    if (post2certificate.containsKey(donateSnapshot.getValue(String.class))){
+                    if (post2certificate.containsKey(donateSnapshot.getValue(String.class))) {
                         post2certificate.get(donateSnapshot.getValue(String.class)).add(donateSnapshot.getKey());
-                    }
-                    else{
+                    } else {
                         post2certificate.put(donateSnapshot.getValue(String.class), new ArrayList<String>(Arrays.asList(donateSnapshot.getKey())));
                     }
-
                 }
+
                 listener.onSuccess(dataSnapshot);
             }
 
@@ -286,30 +293,28 @@ public class MyDonationList extends AppCompatActivity {
                 listener.onFailure();
             }
         });
-
     }
 
-    public void getHospitalHistory(DatabaseReference databaseReference, final onGetDataListener listener){
+    public void getHospitalHistory(DatabaseReference databaseReference, final onGetDataListener listener) {
         listener.onStart();
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot hospitalSnapshot : dataSnapshot.getChildren()){
-                    // TODO: 병원 정보 가져오기
-                    if(certificate2index.containsKey(hospitalSnapshot.getKey())){
-                        if(!hospitalSnapshot.child("owner").child("hospital_code").getValue(String.class).isEmpty()){
+                for (DataSnapshot hospitalSnapshot : dataSnapshot.getChildren()) {
+                    if (certificate2index.containsKey(hospitalSnapshot.getKey())) {
+                        if (!hospitalSnapshot.child("owner").child("hospital_code").getValue(String.class).isEmpty()) {
                             int idx = certificate2index.get(hospitalSnapshot.getKey());
                             String hos_name = code2hospital.get(hospitalSnapshot.child("owner").child("hospital_code").getValue(String.class));
-                            check.set(idx, hos_name + " 접수 완료");
-                        }
-                        else{
+                            ((MyDonationListItem)adapter.getItem(idx)).check = hos_name + " 접수 완료";
+                        } else {
                             int idx = certificate2index.get(hospitalSnapshot.getKey());
-                            check.set(idx, "접수중");
+                            ((MyDonationListItem)adapter.getItem(idx)).check = "접수중";
                         }
 
+                        adapter.notifyDataSetChanged();
                     }
                 }
+
                 listener.onSuccess(dataSnapshot);
             }
 
@@ -318,19 +323,17 @@ public class MyDonationList extends AppCompatActivity {
                 listener.onFailure();
             }
         });
-
     }
 
-
-    public void getPost(DatabaseReference databaseReference, final onGetDataListener listener){
+    public void getPost(DatabaseReference databaseReference, final onGetDataListener listener) {
         listener.onStart();
         databaseReference.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
-
-                    if (post2certificate.containsKey(postSnapshot.getKey())){
+                adapter.clearAllItems();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    if (post2certificate.containsKey(postSnapshot.getKey())) {
                         // TODO: getOwner로 확인하기
                         OwnerCheckTask ownerCheckTask = new OwnerCheckTask();
                         ArrayList<String> certificate_list = post2certificate.get(postSnapshot.getKey());
@@ -342,8 +345,6 @@ public class MyDonationList extends AppCompatActivity {
                             owner = owner.replace("=", ",");
                             owner = owner.split(",")[1];
                             System.out.println("Owner: " + owner);
-
-
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         } catch (ExecutionException e) {
@@ -351,35 +352,31 @@ public class MyDonationList extends AppCompatActivity {
                         }
 
                         if (owner.equals(postSnapshot.child("public_key").getValue(String.class))) {
-                            // TODO: 동일하면 Append
-                            title.add(postSnapshot.child("title").getValue(String.class));
-                            time.add(postSnapshot.child("timestamp").getValue(String.class).split("-")[1] + "월" + postSnapshot.child("timestamp").getValue(String.class).split("-")[2] + "일");
-                            story.add(postSnapshot.child("story").getValue(String.class));
-
-                            float donated = postSnapshot.child("donated_num").getValue(Integer.class);
-                            float goal = postSnapshot.child("target_num").getValue(Integer.class);
-                            System.out.println("Percent " + donated / goal * 100.0f);
-                            num_percent.add(donated / goal * 100.0f);
-                            percent.add(String.valueOf(certificate_list.size()) + "개");
-//                                    String.format("%.1f", donated / goal * 100.0f) + "%");
-
-
-                            check.add("");
+                            MyDonationListItem item = new MyDonationListItem();
+                            item.postID = postSnapshot.child("post_id").getValue(String.class);
+                            item.writer = postSnapshot.child("user_id").getValue(String.class);
+                            item.title = postSnapshot.child("title").getValue(String.class);
+                            item.summary = postSnapshot.child("summary").getValue(String.class);
+                            item.content = postSnapshot.child("story").getValue(String.class);
+                            item.time = postSnapshot.child("timestamp").getValue(String.class).split("-")[1] +
+                                    "월" + postSnapshot.child("timestamp").getValue(String.class).split("-")[2] + "일";
+                            item.donatedNum = postSnapshot.child("donated_num").getValue(Integer.class);
+                            item.goalNum = postSnapshot.child("target_num").getValue(Integer.class);
+                            item.check = "";
+                            adapter.addItem(item);
 
                             for (int i = 0; i < certificate_list.size(); i++) {
                                 certificate2index.put(certificate_list.get(i), index);
-
                             }
+
                             index++;
-                        }
-                        else{
+                        } else {
                             isChanged = true;
                         }
-
-
                     }
-
                 }
+
+                listView.setAdapter(adapter);
                 listener.onSuccess(dataSnapshot);
             }
 
@@ -388,18 +385,11 @@ public class MyDonationList extends AppCompatActivity {
                 listener.onFailure();
             }
         });
-
     }
 
-
-
-
-
     class OwnerCheckTask extends AsyncTask<String, Void, String> {
-
         @Override
         protected String doInBackground(String... params) {
-
             try {
                 return mContract.getOwner(params[0]).send().toString();
             } catch (Exception e) {

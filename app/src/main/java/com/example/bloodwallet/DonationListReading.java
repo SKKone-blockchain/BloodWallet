@@ -21,17 +21,19 @@ public class DonationListReading extends LinearLayout {
     public DonationListReading(Context context) {
         super(context);
         inflation_init(context);
-        donationtitleView= (TextView)findViewById(R.id.title_listreading);
-        donationtimeView=(TextView)findViewById(R.id.time_listreading);
-        donationstoryView= (TextView)findViewById(R.id.stoty_listreading);
-        donationpercentView= (TextView)findViewById(R.id.percent_listreading);
-        donationcheckView= (TextView)findViewById(R.id.check_listreading);
-        ProgressBar = findViewById(R.id.progress_reading);
-    }
-    private void inflation_init(Context context){
-        LayoutInflater inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.activity_donation_list_reading,this, true);
 
+        donationtitleView = (TextView)findViewById(R.id.title_listreading);
+        donationtimeView = (TextView)findViewById(R.id.time_listreading);
+        donationstoryView = (TextView)findViewById(R.id.stoty_listreading);
+        donationpercentView = (TextView)findViewById(R.id.percent_listreading);
+        donationcheckView = (TextView)findViewById(R.id.check_listreading);
+        ProgressBar = findViewById(R.id.progress_reading);
+        ProgressBar.setProgressBarColor(getResources().getColor(R.color.colorPrimary));
+    }
+
+    private void inflation_init(Context context){
+        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.activity_donation_list_reading,this, true);
     }
 
     public void setTitle(String title){
