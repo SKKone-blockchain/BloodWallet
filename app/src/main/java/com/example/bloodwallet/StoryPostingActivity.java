@@ -106,12 +106,7 @@ public class StoryPostingActivity extends AppCompatActivity {
                             }
                         }
                         catch (Exception e){
-                            e.printStackTrace(); //오류 출력(방법은 여러가지)
-                            try {
-                                throw e;
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
+                            e.printStackTrace(); //오류 출력
                         }
                     }
                     summary = worst_sentence;
