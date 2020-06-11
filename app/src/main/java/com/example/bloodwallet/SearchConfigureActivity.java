@@ -12,16 +12,21 @@ import android.widget.TextView;
 
 public class SearchConfigureActivity extends AppCompatActivity {
 
+    String userID;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_configure);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        userID = getIntent().getStringExtra("userID");
+
         ImageButton myInfoButton = findViewById(R.id.myinfobutton_list);
         myInfoButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent i = new Intent(SearchConfigureActivity.this , Myinfo.class );
+                i.putExtra("userID", userID);
                 startActivity(i);
             }
         });

@@ -74,7 +74,7 @@ public class MyDonationList extends AppCompatActivity {
         ImageButton myinfobutton=findViewById(R.id.myinfobutton_list);
         myinfobutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent i = new Intent(  MyDonationList.this , Myinfo.class );
+                Intent i = new Intent(MyDonationList.this , Myinfo.class);
                 i.putExtra("userID",userID);
                 startActivity(i);
             }
@@ -100,9 +100,6 @@ public class MyDonationList extends AppCompatActivity {
         address = "0x5039d770becfa6ae56df428f4a3f413560b15678"; //pref.getString("PUBLIC_KEY", null);
         System.out.println("Public Key: " + address);
         assert address != null;
-
-        // TODO: user id intent 다시 정리하기
-        userID = "sk";
 
         mContract = BloodWallet.load(
                 CONTRACT_ADDRESS,

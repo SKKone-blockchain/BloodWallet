@@ -38,13 +38,13 @@ public class Post {
     @Exclude
     public Map<String, Object> toMap(){
         HashMap<String, Object> result = new HashMap<>();
-        result.put("postID", post_id);
+        result.put("post_id", post_id);
         result.put("title", title);
-        result.put("content", story);
+        result.put("story", story);
         result.put("user_id", user_id);
         result.put("donated_num", donated_num);
-        result.put("goal_num", target_num);
-        result.put("abstract", summary);
+        result.put("target_num", target_num);
+        result.put("summary", summary);
         result.put("timestamp", timestamp);
         return result;
     }

@@ -70,10 +70,6 @@ public class MyDonationsReceivedList extends AppCompatActivity {
         System.out.println("Public Key: " + address);
         assert address != null;
 
-        // TODO: user id intent 다시 정리하기
-        userID = "sk";
-
-
         ImageButton myinfobutton = findViewById(R.id.myinfobutton_list);
         myinfobutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
