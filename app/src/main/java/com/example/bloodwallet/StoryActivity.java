@@ -97,6 +97,12 @@ public class StoryActivity extends AppCompatActivity {
             }
         });
 
+        if (writer.equals(userID)) {
+            donateButton.setVisibility(View.GONE);
+        } else {
+            donateButton.setVisibility(View.VISIBLE);
+        }
+
         patientIDTextView = findViewById(R.id.story_patient_id);
         patientInfoTextView = findViewById(R.id.story_patient_info);
     }
