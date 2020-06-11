@@ -209,10 +209,8 @@ public class Donation extends AppCompatActivity implements WithProgressView {
                                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
 
                                     public void onClick(DialogInterface dialog, int whichButton) {
-
                                         dialog.cancel();
-                                        Intent intent = new Intent(Donation.this, StoryListActivity.class);
-                                        startActivity(intent);
+                                        finish();
                                     }
                                 });
                         AlertDialog dialog2 = builder.create();
