@@ -154,7 +154,7 @@ public class StoryListActivity extends AppCompatActivity {
                         }
                     }
 
-                    score += 25.0 * (double)donatedNum / goalNum;
+                    score += 25.0 *(1 - (double)donatedNum / goalNum);
 
                     listViewAdapter.addItem(post, score);
                 }
