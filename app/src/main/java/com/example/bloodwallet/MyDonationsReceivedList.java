@@ -1,5 +1,7 @@
 package com.example.bloodwallet;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -76,10 +78,6 @@ public class MyDonationsReceivedList extends AppCompatActivity {
         System.out.println("Public Key: " + address);
         assert address != null;
 
-
-
-
-
         ImageButton myinfobutton = findViewById(R.id.myinfobutton_list);
         myinfobutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
@@ -149,7 +147,19 @@ public class MyDonationsReceivedList extends AppCompatActivity {
 
                 if (total != Integer.parseInt(count)){
                     System.out.println("DATA IS CHANGED!!!");
-                    Toast.makeText(getApplicationContext(), "헌혈 증서 기부 기록에 문제가 있습니다.", Toast.LENGTH_SHORT).show();
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MyDonationsReceivedList.this);
+                    builder.setTitle("\n헌혈증서 기부 내역 조회")
+                            .setMessage("기부 기록에 문제가 있습니다.")
+                            .setCancelable(false)// 뒤로버튼으로 취소금지
+                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int whichButton) {
+
+                                    dialog.cancel();
+                                }
+                            });
+                    AlertDialog dialog2 = builder.create();
+                    dialog2.show();
                 }
                 else{
                     System.out.println("Nothing changed");

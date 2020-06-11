@@ -1,5 +1,7 @@
 package com.example.bloodwallet;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -54,6 +56,7 @@ public class MyDonationList extends AppCompatActivity {
     public int index = 0;
     HashMap<String, String> code2hospital = new HashMap<>();
 
+    boolean isChanged = false;
     private BloodWallet mContract;
     private String private_key = "";
     private String address = "";
@@ -77,7 +80,7 @@ public class MyDonationList extends AppCompatActivity {
         ImageButton myinfobutton=findViewById(R.id.myinfobutton_list);
         myinfobutton.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
-                Intent i = new Intent(  MyDonationList.this , Myinfo.class );
+                Intent i = new Intent(MyDonationList.this , Myinfo.class);
                 i.putExtra("userID",userID);
                 startActivity(i);
             }
@@ -137,6 +140,25 @@ public class MyDonationList extends AppCompatActivity {
                                     public void onSuccess(DataSnapshot dataSnapshot) {
                                         adapter = new myadapter();
                                         listView.setAdapter(adapter);
+
+                                        if (isChanged){
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(MyDonationList.this);
+                                            builder.setTitle("\n헌혈증서 기부 내역 조회")
+                                                    .setMessage("기부 기록에 문제가 있습니다.")
+                                                    .setCancelable(false)// 뒤로버튼으로 취소금지
+                                                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+
+                                                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                                                            dialog.cancel();
+                                                        }
+                                                    });
+                                            AlertDialog dialog2 = builder.create();
+                                            dialog2.show();
+                                        }
+                                        else {
+                                            Toast.makeText(getApplicationContext(),"헌혈증서 기부 기록이 무결합니다.",Toast.LENGTH_SHORT).show();
+                                        }
                                     }
 
                                     @Override
@@ -338,7 +360,8 @@ public class MyDonationList extends AppCompatActivity {
                             float goal = postSnapshot.child("target_num").getValue(Integer.class);
                             System.out.println("Percent " + donated / goal * 100.0f);
                             num_percent.add(donated / goal * 100.0f);
-                            percent.add(String.format("%.1f", donated / goal * 100.0f) + "%");
+                            percent.add(String.valueOf(certificate_list.size()) + "개");
+//                                    String.format("%.1f", donated / goal * 100.0f) + "%");
 
 
                             check.add("");
@@ -347,9 +370,12 @@ public class MyDonationList extends AppCompatActivity {
                                 certificate2index.put(certificate_list.get(i), index);
 
                             }
-
+                            index++;
                         }
-                        index++;
+                        else{
+                            isChanged = true;
+                        }
+
 
                     }
 

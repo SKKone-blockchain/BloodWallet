@@ -394,6 +394,8 @@ public class Donation extends AppCompatActivity implements WithProgressView {
 
                                 dialog.cancel();
                                 Intent intent = new Intent(Donation.this, MainInfo.class);
+                                intent.putExtra("userID", userID);
+                                //
                                 startActivity(intent);
                             }
                         });
