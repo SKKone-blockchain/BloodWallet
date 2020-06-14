@@ -266,16 +266,18 @@ public class MyDonationsReceivedList extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()){
-                    String write_id = postSnapshot.child("user_id").getValue(String.class);
-                    Post post = postSnapshot.getValue(Post.class);
+                if (!isStarted) {
+                    for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                        String write_id = postSnapshot.child("user_id").getValue(String.class);
+                        Post post = postSnapshot.getValue(Post.class);
 
-                    // TODO: User ID 가져오기
-                    if(write_id.equals(user_id)){
-                        postList.add(post);
+                        // TODO: User ID 가져오기
+                        if (write_id.equals(user_id)) {
+                            postList.add(post);
+                        }
                     }
+                    listener.onSuccess(dataSnapshot);
                 }
-                listener.onSuccess(dataSnapshot);
             }
 
             @Override

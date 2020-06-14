@@ -307,22 +307,26 @@ public class MyDonationList extends AppCompatActivity {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot hospitalSnapshot : dataSnapshot.getChildren()) {
-                    if (certificate2index.containsKey(hospitalSnapshot.getKey())) {
-                        if (!hospitalSnapshot.child("owner").child("hospital_code").getValue(String.class).isEmpty()) {
-                            int idx = certificate2index.get(hospitalSnapshot.getKey());
-                            String hos_name = code2hospital.get(hospitalSnapshot.child("owner").child("hospital_code").getValue(String.class));
-                            ((MyDonationListItem)adapter.getItem(idx)).check = hos_name + " 접수 완료";
-                        } else {
-                            int idx = certificate2index.get(hospitalSnapshot.getKey());
-                            ((MyDonationListItem)adapter.getItem(idx)).check = "접수중";
+
+                // TODO: 고치기
+                if (!isStarted) {
+                    for (DataSnapshot hospitalSnapshot : dataSnapshot.getChildren()) {
+                        if (certificate2index.containsKey(hospitalSnapshot.getKey())) {
+                            if (!hospitalSnapshot.child("owner").child("hospital_code").getValue(String.class).isEmpty()) {
+                                int idx = certificate2index.get(hospitalSnapshot.getKey());
+                                String hos_name = code2hospital.get(hospitalSnapshot.child("owner").child("hospital_code").getValue(String.class));
+                                ((MyDonationListItem) adapter.getItem(idx)).check = hos_name + " 접수 완료";
+                            } else {
+                                int idx = certificate2index.get(hospitalSnapshot.getKey());
+                                ((MyDonationListItem) adapter.getItem(idx)).check = "접수중";
+                            }
+
+                            adapter.notifyDataSetChanged();
                         }
-
-                        adapter.notifyDataSetChanged();
                     }
-                }
 
-                listener.onSuccess(dataSnapshot);
+                    listener.onSuccess(dataSnapshot);
+                }
             }
 
             @Override
