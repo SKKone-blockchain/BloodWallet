@@ -38,6 +38,9 @@ public class BloodCertificationCameraActivity extends Activity implements Surfac
 
     private TessBaseAPI tess;
     String dataPath = "";
+    String userID;
+    String userName;
+    String userBirthDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +50,10 @@ public class BloodCertificationCameraActivity extends Activity implements Surfac
         Toast.makeText(this, "등록할 헌혈 증서를 카메라에 가져다주세요", Toast.LENGTH_LONG).show();
 
         cameraView = (SurfaceView)findViewById(R.id.blood_certificate_camera);
+
+        userID = getIntent().getStringExtra("userID");
+        userName = getIntent().getStringExtra("userName");
+        userBirthDate = getIntent().getStringExtra("userBirthDate");
 
         camera = Camera.open();
         camera.setDisplayOrientation(90);
@@ -114,6 +121,9 @@ public class BloodCertificationCameraActivity extends Activity implements Surfac
             Log.d("test", ocrResult);
 
             intent.putExtra("ocr", ocrResult);
+            intent.putExtra("userID", userID);
+            intent.putExtra("userName", userName);
+            intent.putExtra("userBirthDate", userBirthDate);
             startActivity(intent);
             finish();
         }
@@ -151,22 +161,16 @@ public class BloodCertificationCameraActivity extends Activity implements Surfac
     }
 
     public static Bitmap overlay(Bitmap bitmap) {
-        Bitmap white1 = getWhiteBitmap(bitmap, 0.45, 0.3);
-        Bitmap white2 = getWhiteBitmap(bitmap, 1, 0.15);
-        Bitmap white3 = getWhiteBitmap(bitmap, 1, 0.17);
-        Bitmap white4 = getWhiteBitmap(bitmap, 0.24, 1);
-        Bitmap white5 = getWhiteBitmap(bitmap, 1, 0.15);
-        Bitmap white6 = getWhiteBitmap(bitmap, 0.5, 0.15);
+        Bitmap white1 = getWhiteBitmap(bitmap, 0.45, 0.5);
+        Bitmap white2 = getWhiteBitmap(bitmap, 1, 0.2);
+        Bitmap white3 = getWhiteBitmap(bitmap, 0.22, 1);
 
         Bitmap bmOverlay = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig());
         Canvas canvas = new Canvas(bmOverlay);
         canvas.drawBitmap(bitmap, new Matrix(), null);
         canvas.drawBitmap(white1, 0, 0, null);
-        canvas.drawBitmap(white2, 0, (int)(bitmap.getHeight() * 0.5), null);
-        canvas.drawBitmap(white3, 0, bitmap.getHeight() - white3.getHeight(), null);
-        canvas.drawBitmap(white4, 0, 0, null);
-        canvas.drawBitmap(white5, 0, (int)(bitmap.getHeight() * 0.2), null);
-        canvas.drawBitmap(white6, (int)(bitmap.getWidth() * 0.5), (int)(bitmap.getHeight() * 0.43), null);
+        canvas.drawBitmap(white2, 0, (int)(0.45 * bitmap.getHeight()), null);
+        canvas.drawBitmap(white3, 0, 0, null);
 
         return bmOverlay;
     }

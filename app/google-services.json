@@ -15,6 +15,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "178638613240-k195616u2prln1a0kgk48ukshdjkqtvh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bloodwallet",
+            "certificate_hash": "a8a791b965bc241a00c727a0d472d478340b2d6b"
+          }
+        },
+        {
+          "client_id": "178638613240-1kskvbjdhhkv13m8aalcb7hbq9igtsfa.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bloodwallet",
+            "certificate_hash": "65f963b80274c6142da87d530844aef950fb0901"
+          }
+        },
+        {
+          "client_id": "178638613240-8pteb4cnp8t62ch5dj5qpqer9ij6c8as.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.bloodwallet",
+            "certificate_hash": "01f849c0f1fa3138074bfbf7edbe07bc4de72fd9"
+          }
+        },
+        {
           "client_id": "178638613240-8djud56dqld5c14pqv7gktpthm7h7a8v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

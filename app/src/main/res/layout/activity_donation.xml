@@ -50,6 +50,7 @@
                 android:layout_marginRight="20dp"/>
         </LinearLayout>
         <TextView
+            android:id="@+id/donation_patient_info"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginHorizontal="20dp"

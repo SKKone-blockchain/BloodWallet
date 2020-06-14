@@ -1,32 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="100dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@drawable/listframe">
-    <LinearLayout
 
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="9"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/percent_recievedreading"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_weight="1.8"
-            android:gravity="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
-            android:textColor="#F78C8C" />
+        <FrameLayout
+            android:layout_width="65dp"
+            android:layout_weight="0.5"
+            android:layout_height="match_parent">
+
+            <com.mikhaellopez.circularprogressbar.CircularProgressBar
+                android:id="@+id/progress_receivedreading"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
+                app:cpb_background_progressbar_color="#b6bbd8"
+                app:cpb_background_progressbar_width="5dp"
+                app:cpb_progress_direction="to_right"
+                app:cpb_progressbar_color="#3f51b5"
+                app:cpb_progressbar_width="6dp"
+                app:cpb_round_border="false" />
+
+            <TextView
+                android:id="@+id/percent_recievedreading"
+                android:layout_width="65dp"
+                android:layout_height="65dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textColor="#F78C8C"
+                android:text="0%"/>
+
+        </FrameLayout>
 
         <LinearLayout
-
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="5"
+            android:layout_weight="3"
             android:orientation="vertical">
 
             <TextView
@@ -34,40 +52,48 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="4"
-                android:paddingTop="15dp"
+                android:layout_marginTop="15dp"
                 android:textStyle="bold"
                 android:textColor="#5E5E5E" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
 
             <TextView
                 android:id="@+id/stoty_recievedreading"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="6"
-                android:textColor="#5E5E5E" />
-        </LinearLayout>
+                android:textColor="#5E5E5E"
+                android:maxLines="1"/>
 
+        </LinearLayout>
 
         <TextView
             android:id="@+id/time_recievedreading"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingTop="10dp"
+            android:layout_weight="2"
+            android:layout_gravity="center_vertical"
             android:textColor="#5E5E5E" />
-
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_weight="0.25"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="10"/>
+
         </LinearLayout>
 
     </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"

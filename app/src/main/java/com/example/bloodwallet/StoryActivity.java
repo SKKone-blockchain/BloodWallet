@@ -1,14 +1,14 @@
 package com.example.bloodwallet;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.ActionBar;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -16,21 +16,44 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class StoryActivity extends AppCompatActivity {
     ListView listView;
-    String[] messagestr={"힘내세요!","힘내요!","정말 안타까운 이야기네요 ㅜㅜ","비록 적은 수의 헌혈증이지만 도움이 됐으면 좋겠습니다."};
+    List<String> commentList;
     myadapter adapter;
+
     String userID;
-    private StoryListViewAdapter listViewAdapter;
+    String postID;
+    String writer;
+
+    TextView patientIDTextView;
+    TextView patientInfoTextView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
-        Intent intent2 = getIntent();
-        userID=intent2.getStringExtra("userID");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        commentList = new ArrayList<>();
+
+        Intent intent2 = getIntent();
+        userID = intent2.getStringExtra("userID");
+        postID = intent2.getStringExtra("postID");
+        writer = intent2.getStringExtra("writer");
+        loadDataFromFirebase();
 
         ImageButton myInfoButton = findViewById(R.id.myinfobutton_list);
         myInfoButton.setOnClickListener(new View.OnClickListener() {
@@ -43,7 +66,6 @@ public class StoryActivity extends AppCompatActivity {
 
         listView = (ListView)findViewById(R.id.messages);
         adapter = new myadapter();
-        listView.setAdapter(adapter);
 
         Intent intent = getIntent();
 
@@ -69,10 +91,78 @@ public class StoryActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent i = new Intent(  StoryActivity.this , Donation.class );
                 i.putExtra("userID",userID);
+                i.putExtra("postID", postID);
+                i.putExtra("writer", writer);
                 startActivity(i);
             }
         });
+
+        if (writer.equals(userID)) {
+            donateButton.setVisibility(View.GONE);
+        } else {
+            donateButton.setVisibility(View.VISIBLE);
+        }
+
+        patientIDTextView = findViewById(R.id.story_patient_id);
+        patientInfoTextView = findViewById(R.id.story_patient_info);
     }
+
+    private void loadDataFromFirebase() {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("posts/" + postID);
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                HashMap<String, HashMap> posts = (HashMap)dataSnapshot.getValue();
+                HashMap<String, HashMap> comments = posts.get("comments");
+                commentList.clear();
+                if (comments != null && comments.isEmpty() == false) {
+                    for (Map.Entry<String, HashMap> entry : comments.entrySet()) {
+                        String comment = entry.getValue().get("content").toString();
+                        commentList.add(comment);
+                    }
+                }
+                listView.setAdapter(adapter);
+
+                HashMap<String, String> user = (HashMap)dataSnapshot.getValue();
+                String patientID = user.get("user_id");
+                loadPatientInformation(patientID);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void loadPatientInformation(String patientID) {
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference("users/" + patientID);
+        database.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                HashMap<String, String> users = (HashMap)dataSnapshot.getValue();
+                String sex = users.get("sex").toString();
+                sex = (sex.equals("male"))? "남자" : "여자";
+
+                String birthDate = users.get("birthdate").toString();
+                int patientYear = Integer.parseInt(birthDate.substring(0, 4));
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+                Date date = new Date(System.currentTimeMillis());
+                String today = formatter.format(date);
+                int year = Integer.parseInt(today.substring(0, 4));
+                String info = ((year - patientYear + 1) + "세, ") + sex;
+
+                patientInfoTextView.setText(info);
+                patientIDTextView.setText(patientID);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:{ //toolbar의 back키 눌렀을 때 동작
@@ -82,13 +172,14 @@ public class StoryActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
     class myadapter extends BaseAdapter {
         @Override
-        public int getCount() { return messagestr.length; }
+        public int getCount() { return commentList.size(); }
 
         @Override
         public Object getItem(int position) {
-            return messagestr[position];
+            return commentList.get(position);
         }
 
         @Override
@@ -99,8 +190,8 @@ public class StoryActivity extends AppCompatActivity {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
 
-            messages view= new messages(getApplicationContext());
-            view.setMessages(messagestr[position]);
+            messages view = new messages(getApplicationContext());
+            view.setMessages(commentList.get(position));
 
             return view;
         }

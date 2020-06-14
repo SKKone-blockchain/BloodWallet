@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.bloodwallet.task.onGetDataListener;
 import com.example.bloodwallet.ui.Currentuserinfo;
 import com.example.bloodwallet.ui.User;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -28,7 +29,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -40,8 +43,13 @@ public class Login extends AppCompatActivity {
     EditText ID;
     EditText PW;
     Button loginbutton_login;
-    String userID;
     HashMap<String, User> user_map = new HashMap<>();
+
+    boolean isCheck = false;
+    String userID;
+    String userName;
+    String userBirthDate;
+
 //    {"park": user_instancee, "sungyoun":user_instance}
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,13 +63,42 @@ public class Login extends AppCompatActivity {
         ID = findViewById(R.id.login_id);
         PW = findViewById(R.id.login_password);
 
-        if(firebaseAuth.getCurrentUser() != null){
-            userID = firebaseAuth.getCurrentUser().getEmail().split("@")[0];
-                Intent intent=new Intent(this,MainInfo.class);
-                intent.putExtra("userID",userID);
-            getFirebaseDatabase();
-            finish();
-            startActivity(intent);
+        if(firebaseAuth.getCurrentUser() != null) {
+            String email = firebaseAuth.getCurrentUser().getEmail();
+            ID.setText(email);
+            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
+            loadUserID(userRef, email, new onGetDataListener() {
+                @Override
+                public void onSuccess(DataSnapshot dataSnapshot) {
+
+                    if (isCheck) {
+                        Toast.makeText(Login.this, userID + "님 환영합니다.", Toast.LENGTH_LONG).show();
+
+                        Intent intent = new Intent(Login.this, MainInfo.class);
+                        intent.putExtra("userID", userID);
+                        intent.putExtra("userName", userName);
+                        intent.putExtra("userBirthDate", userBirthDate);
+                        getFirebaseDatabase();
+                        finish();
+
+                        startActivity(intent);
+                    }
+                    isCheck = false;
+                }
+
+                @Override
+                public void onStart() {
+
+                }
+
+                @Override
+                public void onFailure() {
+
+                }
+            });
+
+
+            // TODO: Intent
         }
 
         loginbutton_login.setOnClickListener(new View.OnClickListener() {
@@ -78,7 +115,40 @@ public class Login extends AppCompatActivity {
         });
 
         getFirebaseDatabase();
+    }
 
+
+    private void loadUserID(DatabaseReference userRef, String userEmail, final onGetDataListener listener) {
+
+        isCheck = true;
+        listener.onStart();
+
+        userRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                    HashMap<String, HashMap> userInfo = (HashMap) dataSnapshot.getValue();
+                    for (Map.Entry<String, HashMap> entry : userInfo.entrySet()) {
+                        HashMap userMap = entry.getValue();
+                        if (userMap.get("email") == null) {
+                            continue;
+                        }
+                        String email = userMap.get("email").toString();
+                        if (email.equals(userEmail)) {
+                            userID = userMap.get("id").toString();
+                            userName = userMap.get("name").toString();
+                            userBirthDate = userMap.get("birthdate").toString();
+                        }
+                    }
+
+                listener.onSuccess(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                listener.onFailure();
+            }
+        });
     }
 
     public void getFirebaseDatabase(){
@@ -120,17 +190,40 @@ public class Login extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()) {
-                            Log.d("Login", "signInWithEmail:success");
-                            FirebaseUser user = firebaseAuth.getCurrentUser();
-                            userID=ID.getText().toString().trim().split("@")[0];
 
-                            Toast.makeText(Login.this, userID+"님 환영합니다." , Toast.LENGTH_LONG).show();
-                            Intent i = new Intent(Login.this, MainInfo.class);
-                            i.putExtra("userID",userID);
-                            startActivity(i);
+                            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
+                            loadUserID(userRef, email, new onGetDataListener() {
+                                @Override
+                                public void onSuccess(DataSnapshot dataSnapshot) {
+                                    if (isCheck) {
+                                        Toast.makeText(Login.this, userID + "님 환영합니다.", Toast.LENGTH_LONG).show();
+
+                                        Intent intent = new Intent(Login.this, MainInfo.class);
+                                        intent.putExtra("userID", userID);
+                                        intent.putExtra("userName", userName);
+                                        intent.putExtra("userBirthDate", userBirthDate);
+                                        getFirebaseDatabase();
+                                        finish();
+
+                                        startActivity(intent);
+                                    }
+                                    isCheck = false;
+                                }
+
+                                @Override
+                                public void onStart() {
+
+                                }
+
+                                @Override
+                                public void onFailure() {
+
+                                }
+                            });
+
                         } else {
                             Log.w("Login", "signInWithEmail:failure", task.getException());
-                            Toast.makeText(Login.this, "로그인 실패!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Login.this, "이메일 또는 비밀번호가 틀렸습니다", Toast.LENGTH_LONG).show();
                         }
                     }
                 });

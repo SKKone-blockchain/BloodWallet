@@ -16,19 +16,15 @@ public class messages extends LinearLayout {
     public messages(Context context) {
         super(context);
         inflation_init(context);
-        message= (TextView)findViewById(R.id.messagetext);
-
+        message = findViewById(R.id.messagetext);
     }
+
     private void inflation_init(Context context){
-        LayoutInflater inflater=(LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater inflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.activity_messages,this, true);
-
-
     }
 
     public void setMessages(String messagestr){
         message.setText(messagestr);
     }
-
-
 }
