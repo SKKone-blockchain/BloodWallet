@@ -165,6 +165,10 @@ public class Myinfo extends AppCompatActivity {
                 for (Map.Entry<String, HashMap> entry : certificates.entrySet()) {
                     HashMap certificateMap = entry.getValue();
                     HashMap<String, String> owner = (HashMap) certificateMap.get("owner");
+                    if (owner == null) {
+                        continue;
+                    }
+                    
                     String ownerID = owner.get("owner_id").toString();
                     if (userID.equals(ownerID)) {
                         count++;
