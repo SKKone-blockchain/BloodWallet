@@ -476,11 +476,13 @@ public class Donation extends AppCompatActivity implements WithProgressView {
 
                     // TODO: User ID 가져오기
                     if(ownership.user_id.equals(ownership.owner_id) && ownership.hospital_code.isEmpty()){
+
                         //Available
                         System.out.println("available code " + code );
                         available_certificates.add(code);
                     }
                 }
+                
                 listener.onSuccess(dataSnapshot);
             }
 

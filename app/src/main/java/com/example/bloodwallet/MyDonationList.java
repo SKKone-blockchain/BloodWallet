@@ -230,7 +230,8 @@ public class MyDonationList extends AppCompatActivity {
             view.setStory(item.content);
             view.check(item.check);
             int percent = (int)((double)item.donatedNum / item.goalNum * 100);
-            view.percent(percent + "%");
+
+            view.percent(item.donation + "개");
             view.setPercent(percent);
 
             return view;
@@ -255,6 +256,7 @@ public class MyDonationList extends AppCompatActivity {
         public String check;
         public int donatedNum;
         public int goalNum;
+        public int donation;
     }
 
     public void getHospitalCode(DatabaseReference databaseReference, final onGetDataListener listener) {
@@ -368,6 +370,8 @@ public class MyDonationList extends AppCompatActivity {
                             item.donatedNum = postSnapshot.child("donated_num").getValue(Integer.class);
                             item.goalNum = postSnapshot.child("target_num").getValue(Integer.class);
                             item.check = "";
+                            item.donation = post2certificate.get(item.postID).size();
+
                             adapter.addItem(item);
 
                             for (int i = 0; i < certificate_list.size(); i++) {
