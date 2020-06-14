@@ -168,7 +168,7 @@ public class Myinfo extends AppCompatActivity {
                     if (owner == null) {
                         continue;
                     }
-                    
+
                     String ownerID = owner.get("owner_id").toString();
                     if (userID.equals(ownerID)) {
                         count++;

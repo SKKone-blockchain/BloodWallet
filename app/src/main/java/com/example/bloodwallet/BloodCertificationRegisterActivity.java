@@ -281,8 +281,6 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
             donationCodeEditTextView.setText(s);
         }
 
-        nameEditTextView.setText(parsedOcr.get(1).split(" ")[0]);
-
         m = onlyNumberPattern.matcher(parsedOcr.get(1));
         if (m.find()) {
             if (m.group().contains("32")) {
@@ -298,19 +296,10 @@ public class BloodCertificationRegisterActivity extends AppCompatActivity implem
             }
         }
 
-        String s = parsedOcr.get(1).split(" ")[0];
-        if (s.length() > 3) {
-            s = s.substring(s.length() - 3);
-        }
-        nameEditTextView.setText(s);
-
         m = onlyNumberPattern.matcher(parsedOcr.get(2));
-        setDateText(m, birthDateTextView);
-
-        m = onlyNumberPattern.matcher(parsedOcr.get(3));
         setDateText(m, donationDateTextView);
 
-        String sourceName = parsedOcr.get(4);
+        String sourceName = parsedOcr.get(3);
         m = onlyNumberPattern.matcher(sourceName);
         if (m.find()) {
             int index = sourceName.indexOf(m.group().charAt(0));
