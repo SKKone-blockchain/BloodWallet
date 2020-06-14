@@ -472,6 +472,8 @@ public class Donation extends AppCompatActivity implements WithProgressView {
                     String code = certificateSnapshot.getKey();
                     Owner ownership = certificateSnapshot.child("owner").getValue(Owner.class);
 
+                    if (ownership == null) continue;
+
                     // TODO: User ID 가져오기
                     if(ownership.user_id.equals(ownership.owner_id) && ownership.hospital_code.isEmpty()){
                         //Available
