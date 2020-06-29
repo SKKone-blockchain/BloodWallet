@@ -45,6 +45,8 @@
    - 병원 측에서 전산화된 헌혈증서를 접수할 수 있는 [Blood Wallet Admin App](https://github.com/pleiades-s/BloodWallet_Admin)을 통해 사용자는 본인이 기부한 헌혈증서가 어떤 병원에서 접수되었는지 확인할 수 있습니다. (참고로, 병원 접수 기록은 적십자사의 헌혈증서 데이터베이스에서 관리합니다. 적십자사 문의 결과, 현재 병원에서 종이 헌혈증서를 접수하면 병원에서 해당 헌혈증서의 접수 정보를 제출한다고 확인 받았고 본 프로젝트에서는 이를 모킹하여 진행하였습니다.)
    
    ![history](https://github.com/pleiades-s/2020spring_41class_team2/blob/master/images/history.png)
+   
+   ![hospital](https://github.com/SKKone-blockchain/BloodWallet/blob/master/images/receipt.png)
 
 ## 발표자료 및 문서
 1. [발표 동영상](https://www.youtube.com/watch?v=EX5R6WsAMf4)
